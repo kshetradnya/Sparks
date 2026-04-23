@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/Spark/', // Required for GitHub Pages subpath deployment
+  base: '/Sparks/', // Required for GitHub Pages subpath deployment
   plugins: [
     react(),
     tailwindcss(),
