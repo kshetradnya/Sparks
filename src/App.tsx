@@ -11,6 +11,7 @@ import { FooterRobot } from "./components/FooterRobot";
 import { DonationOverlay } from "./components/DonationOverlay";
 import { EventPage } from "./components/EventPage";
 import type { EventData } from "./components/EventPage";
+import { MissionPage } from "./components/MissionPage";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -150,10 +151,12 @@ export default function App() {
   const [showDonation, setShowDonation] = useState(false);
   const [partnerHovered, setPartnerHovered] = useState(false);
   const [activeEvent, setActiveEvent] = useState<EventData | null>(null);
+  const [showMission, setShowMission] = useState(false);
 
   const handleComplete = useCallback(() => setIsLoading(false), []);
   const handleDonationClose = useCallback(() => setShowDonation(false), []);
   const handleEventClose = useCallback(() => setActiveEvent(null), []);
+  const handleMissionClose = useCallback(() => setShowMission(false), []);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const footerVideoRef = useRef<HTMLVideoElement>(null);
@@ -294,6 +297,11 @@ export default function App() {
     <div className="bg-bg min-h-screen text-text-primary selection:bg-text-primary selection:text-bg overflow-x-hidden">
       <AnimatePresence>
         {isLoading && <LoadingScreen onComplete={handleComplete} />}
+      </AnimatePresence>
+
+      {/* Mission Page Overlay */}
+      <AnimatePresence>
+        {showMission && <MissionPage onClose={handleMissionClose} />}
       </AnimatePresence>
 
       {/* Event Detail Overlay */}
@@ -473,7 +481,7 @@ export default function App() {
             </div>
             <h2 className="mission-reveal text-4xl md:text-6xl lg:text-7xl tracking-tight leading-[1.1] max-w-4xl mx-auto group">
               To ignite{" "}
-              <span className="font-display italic text-text-primary group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#89AACC] group-hover:to-[#4E85BF] transition-all duration-500">curiosity</span>
+              <span className="font-display italic text-text-primary group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#b8d4ef] group-hover:to-[#e0ecf7] transition-all duration-500">curiosity</span>
               , bridge the technology gap, and empower every generation to thrive in a digital world.
             </h2>
           </div>
@@ -483,7 +491,7 @@ export default function App() {
               { title: "Every Generation", desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.", icon: "02" },
               { title: "Community First", desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.", icon: "03" },
             ].map((pillar, i) => (
-              <div key={i} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu overflow-hidden">
+              <div key={i} onClick={() => setShowMission(true)} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu overflow-hidden cursor-pointer">
                 <div className="absolute top-0 right-0 p-8 text-6xl opacity-10 font-display italic select-none text-stroke">{pillar.icon}</div>
                 <h3 className="text-2xl font-display italic mb-4 group-hover:translate-x-2 transition-transform">{pillar.title}</h3>
                 <p className="text-muted leading-relaxed group-hover:text-text-primary/80 transition-colors">{pillar.desc}</p>
