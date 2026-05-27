@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hls from "hls.js";
-import { ArrowUpRight, Bell } from "lucide-react";
+import { ArrowUpRight, Bell, Mail, ExternalLink } from "lucide-react";
 
 import { LoadingScreen } from "./components/LoadingScreen";
 import { ContactForm } from "./components/ContactForm";
@@ -98,20 +98,23 @@ const founders = [
   {
     name: "Nitya Jain",
     role: "Founder",
-    desc: "Pursuing IBDP, Nitya is a Cambridge Checkpoint World Topper and one of only 70 students selected for HVBGA. Her academic excellence fuels her drive to make quality education accessible to all.",
+    desc: "A Cambridge Checkpoint World Topper and one of only 70 students selected for HVBGA. Her academic excellence fuels her drive to make quality education accessible to all.",
     img: "https://images.pexels.com/photos/3184611/pexels-photo-3184611.jpeg?auto=compress&cs=tinysrgb&w=400",
+    email: "nitya@sparksnpo.org",
   },
   {
     name: "Kshetradnya",
     role: "Co-Founder",
-    desc: "Pursuing HSC with a deep love for mathematics and machine learning. When not building ML models or solving equations, you'll find him gaming — bringing the same strategic thinking to both code and controllers.",
+    desc: "A deep love for mathematics and machine learning drives everything he does. When not building ML models or solving equations, you'll find him gaming — bringing the same strategic thinking to both code and controllers.",
     img: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=400",
+    email: "kshetradnya@sparksnpo.org",
   },
   {
     name: "Aagam Jain",
     role: "Co-Founder",
-    desc: "The creative force behind Sparks. Pursuing A Levels, Aagam brings artistry to everything — from playing guitar and composing melodies to crafting the creative vision of our programs.",
+    desc: "The creative force behind Sparks. Aagam brings artistry to everything — from playing guitar and composing melodies to crafting the creative vision of our programs.",
     img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
+    email: "aagam@sparksnpo.org",
   },
 ];
 
@@ -130,18 +133,21 @@ const futureEvents = [
     date: "June 15, 2026",
     desc: "A hands-on electronics and engineering workshop for kids aged 8-14. Build, break, and learn!",
     tag: "Workshop",
+    meetingLink: "https://meet.google.com/sparks-stem-day",
   },
   {
     title: "AI Literacy for All",
     date: "July 8, 2026",
     desc: "Our monthly public session on using AI tools responsibly — from ChatGPT to image generators.",
     tag: "Public Talk",
+    meetingLink: "https://meet.google.com/sparks-ai-literacy",
   },
   {
     title: "Tech & Tea",
     date: "August 22, 2026",
     desc: "A relaxed afternoon for seniors to brush up on AI skills, ask questions, and connect with peers.",
     tag: "Seniors",
+    meetingLink: "https://meet.google.com/sparks-tech-tea",
   },
 ];
 
@@ -152,11 +158,13 @@ export default function App() {
   const [partnerHovered, setPartnerHovered] = useState(false);
   const [activeEvent, setActiveEvent] = useState<EventData | null>(null);
   const [showMission, setShowMission] = useState(false);
+  const [activeMissionFocus, setActiveMissionFocus] = useState<string | null>(null);
 
   const handleComplete = useCallback(() => setIsLoading(false), []);
   const handleDonationClose = useCallback(() => setShowDonation(false), []);
   const handleEventClose = useCallback(() => setActiveEvent(null), []);
   const handleMissionClose = useCallback(() => setShowMission(false), []);
+  const handleMissionFocusClose = useCallback(() => setActiveMissionFocus(null), []);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const footerVideoRef = useRef<HTMLVideoElement>(null);
@@ -201,6 +209,83 @@ export default function App() {
         { opacity: 1, filter: "blur(0px)", y: 0, duration: 1, stagger: 0.12, ease: "power3.out", delay: 0.2 }
       );
 
+      /* ═══════════════════════════════════════════════
+         3D SCROLL EFFECTS — Sidewave-inspired depth
+         ═══════════════════════════════════════════════ */
+
+      // ── HERO: Depth zoom — content scales toward viewer, video recedes ──
+      const heroContent = document.querySelector(".hero-content") as HTMLElement;
+      const heroVideo = document.querySelector(".hero-video-wrap") as HTMLElement;
+      if (heroContent && heroVideo) {
+        gsap.to(heroContent, {
+          scale: 1.3,
+          y: -80,
+          opacity: 0,
+          filter: "blur(8px)",
+          ease: "power1.in",
+          scrollTrigger: {
+            trigger: ".hero-section",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
+        gsap.to(heroVideo, {
+          scale: 1.2,
+          y: 100,
+          ease: "none",
+          scrollTrigger: {
+            trigger: ".hero-section",
+            start: "top top",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
+      }
+
+      // ── PROGRAMS: Cards emerge from depth with 3D rotation ──
+      const programCards = document.querySelectorAll(".program-card");
+      programCards.forEach((card, i) => {
+        gsap.fromTo(card,
+          {
+            opacity: 0,
+            z: -200,
+            rotationX: 15,
+            rotationY: i === 0 ? -8 : i === 2 ? 8 : 0,
+            scale: 0.85,
+            filter: "blur(6px)",
+          },
+          {
+            opacity: 1,
+            z: 0,
+            rotationX: 0,
+            rotationY: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 95%",
+              end: "top 55%",
+              scrub: 1,
+            },
+          }
+        );
+        // Parallax depth as cards scroll past
+        gsap.to(card, {
+          z: 60 + i * 20,
+          rotationX: -5,
+          y: -30,
+          scrollTrigger: {
+            trigger: card,
+            start: "top 50%",
+            end: "bottom top",
+            scrub: true,
+          },
+        });
+      });
+
       // Quick Look horizontal scroll
       if (quickLookRef.current) {
         const track = quickLookRef.current.querySelector(".quick-look-track") as HTMLElement;
@@ -221,6 +306,22 @@ export default function App() {
                 },
               });
             }
+            // Gallery images: subtle z-depth parallax during horizontal scroll
+            const galleryItems = track.querySelectorAll(".gallery-item");
+            galleryItems.forEach((item, i) => {
+              gsap.fromTo(item,
+                { rotationY: 8, scale: 0.92, opacity: 0.7 },
+                {
+                  rotationY: 0, scale: 1, opacity: 1,
+                  scrollTrigger: {
+                    trigger: quickLookRef.current,
+                    start: () => `top+=${i * 300} top`,
+                    end: () => `top+=${i * 300 + 600} top`,
+                    scrub: 1,
+                  },
+                }
+              );
+            });
             ScrollTrigger.refresh();
           };
           setTimeout(initQuickLook, 500);
@@ -230,34 +331,97 @@ export default function App() {
       // Marquee
       gsap.to(".marquee-inner", { xPercent: -50, ease: "none", duration: 40, repeat: -1 });
 
-      // Founder cards
-      document.querySelectorAll(".founder-card").forEach((card, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 50 },
-          { opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: "power3.out",
-            scrollTrigger: { trigger: card, start: "top 95%", toggleActions: "play none none none" },
+      // ── MISSION: Cinematic 3D reveal with perspective depth ──
+      gsap.to(".mission-bg-text", {
+        yPercent: -20,
+        scale: 1.1,
+        scrollTrigger: { trigger: ".mission-section", start: "top bottom", end: "bottom top", scrub: true },
+      });
+
+      // Mission heading: emerges from deep with blur
+      document.querySelectorAll(".mission-reveal").forEach((el, i) => {
+        gsap.fromTo(el,
+          { opacity: 0, y: 60, z: -100, filter: "blur(12px)" },
+          { opacity: 1, y: 0, z: 0, filter: "blur(0px)", duration: 1.2, delay: i * 0.15,
+            scrollTrigger: { trigger: el, start: "top 92%", toggleActions: "play none none none" },
           }
         );
       });
 
-      // Mission
-      gsap.to(".mission-bg-text", {
-        yPercent: -20,
-        scrollTrigger: { trigger: ".mission-section", start: "top bottom", end: "bottom top", scrub: true },
+      // Mission cards: 3D floating rotation on scroll
+      document.querySelectorAll(".mission-card").forEach((card, i) => {
+        const direction = i === 0 ? -1 : i === 2 ? 1 : 0;
+        // Enter: rotate in from tilted angle
+        gsap.fromTo(card,
+          {
+            opacity: 0,
+            rotationX: 25,
+            rotationY: direction * 15,
+            z: -150,
+            scale: 0.8,
+          },
+          {
+            opacity: 1,
+            rotationX: 0,
+            rotationY: 0,
+            z: 0,
+            scale: 1,
+            duration: 1.2,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 95%",
+              end: "top 50%",
+              scrub: 1,
+            },
+          }
+        );
+        // Continuous: subtle floating rotation as you scroll past
+        gsap.to(card, {
+          rotationX: -8,
+          rotationY: direction * 6,
+          z: 40,
+          scrollTrigger: { trigger: card, start: "top 50%", end: "bottom top", scrub: true },
+        });
       });
-      document.querySelectorAll(".mission-reveal").forEach((el, i) => {
-        gsap.fromTo(el,
-          { opacity: 0, y: 30, filter: "blur(10px)" },
-          { opacity: 1, y: 0, filter: "blur(0px)", duration: 1, delay: i * 0.2,
-            scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
+
+      // ── STATS: Numbers zoom in from depth ──
+      document.querySelectorAll(".stat-item").forEach((item, i) => {
+        gsap.fromTo(item,
+          { opacity: 0, scale: 0.5, z: -200, filter: "blur(10px)" },
+          {
+            opacity: 1, scale: 1, z: 0, filter: "blur(0px)",
+            duration: 1, delay: i * 0.1, ease: "power3.out",
+            scrollTrigger: { trigger: item, start: "top 90%", toggleActions: "play none none none" },
           }
         );
       });
-      document.querySelectorAll(".mission-card").forEach((card) => {
-        gsap.to(card, {
-          rotationX: -10, rotationY: 10, z: 50,
-          scrollTrigger: { trigger: card, start: "top bottom", end: "bottom top", scrub: true },
-        });
+
+      // ── FOUNDER CARDS: 3D rotate-in from tilted perspective ──
+      document.querySelectorAll(".founder-card").forEach((card, i) => {
+        const rotateDir = i === 0 ? -12 : i === 2 ? 12 : 0;
+        gsap.fromTo(card,
+          {
+            opacity: 0,
+            rotationY: rotateDir,
+            rotationX: 10,
+            z: -120,
+            scale: 0.9,
+            filter: "blur(4px)",
+          },
+          {
+            opacity: 1,
+            rotationY: 0,
+            rotationX: 0,
+            z: 0,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 1,
+            delay: i * 0.12,
+            ease: "power3.out",
+            scrollTrigger: { trigger: card, start: "top 95%", toggleActions: "play none none none" },
+          }
+        );
       });
 
       // Bio word reveal
@@ -269,22 +433,52 @@ export default function App() {
         });
       }
 
-      // Future events
+      // ── EVENT CARDS: Slide in from depth with stagger ──
       document.querySelectorAll(".event-card").forEach((card, i) => {
         gsap.fromTo(card,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: "power3.out",
+          {
+            opacity: 0,
+            y: 60,
+            z: -100,
+            rotationX: 12,
+            filter: "blur(4px)",
+          },
+          {
+            opacity: 1,
+            y: 0,
+            z: 0,
+            rotationX: 0,
+            filter: "blur(0px)",
+            duration: 1,
+            delay: i * 0.15,
+            ease: "power3.out",
             scrollTrigger: { trigger: card, start: "top 95%", toggleActions: "play none none none" },
           }
         );
       });
 
-      // Contact section
+      // ── CONTACT: Perspective tilt reveal ──
       document.querySelectorAll(".contact-reveal").forEach((el, i) => {
         gsap.fromTo(el,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 1, delay: i * 0.2,
+          { opacity: 0, y: 50, rotationX: 8, filter: "blur(6px)" },
+          { opacity: 1, y: 0, rotationX: 0, filter: "blur(0px)", duration: 1.2, delay: i * 0.15,
             scrollTrigger: { trigger: el, start: "top 92%", toggleActions: "play none none none" },
+          }
+        );
+      });
+
+      // ── SECTION TRANSITIONS: 3D perspective tilt as sections scroll in ──
+      document.querySelectorAll(".section-3d").forEach((section) => {
+        gsap.fromTo(section,
+          { rotationX: 4, transformOrigin: "center bottom", opacity: 0.8 },
+          {
+            rotationX: 0, opacity: 1,
+            scrollTrigger: {
+              trigger: section,
+              start: "top 95%",
+              end: "top 40%",
+              scrub: 1,
+            },
           }
         );
       });
@@ -299,7 +493,7 @@ export default function App() {
 
       {/* Mission Page Overlay */}
       <AnimatePresence>
-        {showMission && <MissionPage onClose={handleMissionClose} />}
+        {showMission && <MissionPage onClose={handleMissionClose} focusId={activeMissionFocus} />}
       </AnimatePresence>
 
       {/* Event Detail Overlay */}
@@ -354,16 +548,16 @@ export default function App() {
       )}
 
       {/* HERO */}
-      <section className="relative w-full h-screen overflow-hidden">
-        <div className="absolute inset-0 w-full h-full z-0">
+      <section className="hero-section relative w-full h-screen overflow-hidden" style={{ perspective: "1200px" }}>
+        <div className="hero-video-wrap absolute inset-0 w-full h-full z-0 will-change-transform">
           <video ref={videoRef} className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2" autoPlay muted loop playsInline />
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-bg to-transparent" />
         </div>
 
-        <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-5xl mx-auto h-full justify-center">
+        <div className="hero-content relative z-10 flex flex-col items-center text-center px-4 max-w-5xl mx-auto h-full justify-center will-change-transform">
           <p className="blur-in text-xs text-muted uppercase tracking-[0.3em] mb-8">SPARKS NPO</p>
-          <h1 className="text-7xl md:text-[7rem] lg:text-[9rem] font-display italic leading-[0.9] tracking-tight text-text-primary mb-6">
+          <h1 className="text-7xl md:text-[7rem] lg:text-[9rem] font-body font-semibold leading-[0.9] tracking-tight text-text-primary mb-6">
             Sparks
           </h1>
           <div className="blur-in text-xl md:text-3xl text-text-primary/90 font-light tracking-wide mb-6">
@@ -400,7 +594,7 @@ export default function App() {
       </section>
 
       {/* PROGRAMS */}
-      <section id="programs" className="bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50">
+      <section id="programs" className="section-3d bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50" style={{ perspective: "1200px", transformStyle: "preserve-3d" }}>
         <div className="max-w-[1200px] mx-auto px-6 md:px-12">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div className="max-w-2xl">
@@ -414,11 +608,11 @@ export default function App() {
               Three focused initiatives, each designed to make technology accessible and empowering for every generation.
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
             {programs.map((prog, i) => (
               <div
                 key={i}
-                className="group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500 cursor-pointer"
+                className="program-card group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500 cursor-pointer will-change-transform transform-gpu"
                 onClick={() => setActiveEvent(prog)}
               >
                 <div className="aspect-[4/5] overflow-hidden relative">
@@ -454,7 +648,7 @@ export default function App() {
             </p>
           </div>
           {quickLookImages.map((item, i) => (
-            <div key={i} className="flex-shrink-0 w-[320px] md:w-[420px] h-[65vh] rounded-3xl overflow-hidden relative group">
+            <div key={i} className="gallery-item flex-shrink-0 w-[320px] md:w-[420px] h-[65vh] rounded-3xl overflow-hidden relative group will-change-transform transform-gpu">
               <img src={item.src} alt={item.caption} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <div className="absolute bottom-8 left-8 right-8">
@@ -468,7 +662,7 @@ export default function App() {
       </section>
 
       {/* MISSION */}
-      <section id="mission" className="mission-section bg-bg py-24 md:py-48 relative z-20 border-t border-stroke/50 overflow-hidden">
+      <section id="mission" className="mission-section section-3d bg-bg py-24 md:py-48 relative z-20 border-t border-stroke/50 overflow-hidden" style={{ perspective: "1200px" }}>
         <div className="mission-bg-text absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
           <h2 className="text-[20vw] font-display italic leading-none whitespace-nowrap">SPARKS</h2>
         </div>
@@ -483,13 +677,13 @@ export default function App() {
               , bridge the technology gap, and empower every generation to thrive in a digital world.
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 perspective-[1000px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12" style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
             {[
-              { title: "Hands-On Learning", desc: "We believe in learning by doing. Every workshop puts tools in people's hands — from soldering irons to AI prompts.", icon: "01" },
-              { title: "Every Generation", desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.", icon: "02" },
-              { title: "Community First", desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.", icon: "03" },
+              { id: "hands-on", title: "Hands-On Learning", desc: "We believe in learning by doing. Every workshop puts tools in people's hands — from soldering irons to AI prompts.", icon: "01" },
+              { id: "every-gen", title: "Every Generation", desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.", icon: "02" },
+              { id: "community", title: "Community First", desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.", icon: "03" },
             ].map((pillar, i) => (
-              <div key={i} onClick={() => setShowMission(true)} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu overflow-hidden cursor-pointer">
+              <div key={i} onClick={() => { setActiveMissionFocus(pillar.id); setShowMission(true); }} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu will-change-transform overflow-hidden cursor-pointer">
                 <div className="absolute top-0 right-0 p-8 text-6xl opacity-10 font-display italic select-none text-stroke">{pillar.icon}</div>
                 <h3 className="text-2xl font-display italic mb-4 group-hover:translate-x-2 transition-transform">{pillar.title}</h3>
                 <p className="text-muted leading-relaxed group-hover:text-text-primary/80 transition-colors">{pillar.desc}</p>
@@ -500,11 +694,22 @@ export default function App() {
               </div>
             ))}
           </div>
+
+          {/* Main Mission Page redirect */}
+          <div className="mission-reveal flex justify-center mt-16">
+            <button
+              onClick={() => { setActiveMissionFocus(null); setShowMission(true); }}
+              className="group flex items-center gap-3 rounded-full border border-stroke px-8 py-4 text-sm font-medium hover:bg-white hover:text-black transition-all"
+            >
+              <span>Read our full mission</span>
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
+          </div>
         </div>
       </section>
 
       {/* STATS */}
-      <section className="bg-bg py-16 md:py-32 relative z-20 border-t border-stroke/50">
+      <section className="bg-bg py-16 md:py-32 relative z-20 border-t border-stroke/50" style={{ perspective: "800px" }}>
         <div className="max-w-[1000px] mx-auto px-6 md:px-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-stroke">
             {[
@@ -512,7 +717,7 @@ export default function App() {
               { val: "500+", label: "Lives Impacted" },
               { val: "200+", label: "Kids Taught" },
             ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center justify-center pt-8 md:pt-0">
+              <div key={i} className="stat-item flex flex-col items-center justify-center pt-8 md:pt-0 will-change-transform transform-gpu">
                 <h4 className="text-5xl md:text-7xl font-display text-text-primary mb-2">{s.val}</h4>
                 <p className="text-sm text-muted uppercase tracking-widest">{s.label}</p>
               </div>
@@ -522,7 +727,7 @@ export default function App() {
       </section>
 
       {/* FUTURE EVENTS */}
-      <section id="events" className="bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50">
+      <section id="events" className="section-3d bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50" style={{ perspective: "1000px" }}>
         <div className="max-w-[1200px] mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
             <div>
@@ -553,9 +758,16 @@ export default function App() {
                 <p className="text-muted text-sm leading-relaxed mb-6">{ev.desc}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted uppercase tracking-widest">{ev.date}</span>
-                  <div className="w-10 h-10 rounded-full border border-stroke flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    <Bell className="w-4 h-4" />
-                  </div>
+                  <a
+                    href={ev.meetingLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 rounded-full border border-stroke px-4 py-2 text-xs font-medium hover:bg-white hover:text-black transition-all"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Join Event
+                  </a>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               </div>
@@ -565,7 +777,7 @@ export default function App() {
       </section>
 
       {/* ABOUT / FOUNDERS — moved below Future Events */}
-      <section id="about" className="bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50 overflow-hidden">
+      <section id="about" className="section-3d bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50 overflow-hidden" style={{ perspective: "1000px" }}>
         <div className="max-w-[1200px] mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row gap-16 md:gap-24 mb-24 md:mb-32">
             <div className="w-full md:w-1/2">
@@ -596,19 +808,26 @@ export default function App() {
           </div>
 
           {/* Founders Grid */}
-          <div className="founders-grid grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="founders-grid grid grid-cols-1 md:grid-cols-3 gap-8" style={{ perspective: "1000px", transformStyle: "preserve-3d" }}>
             {founders.map((f, i) => (
-              <div key={i} className="founder-card group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500">
-                <div className="aspect-square overflow-hidden relative">
+              <div key={i} className="founder-card group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500 will-change-transform transform-gpu">
+                <div className="aspect-[4/3] overflow-hidden relative">
                   <img src={f.img} alt={f.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-bg/90 via-bg/20 to-transparent" />
                   <div className="absolute bottom-6 left-6">
                     <span className="bg-bg/80 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest border border-stroke">{f.role}</span>
                   </div>
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-display italic mb-3">{f.name}</h3>
-                  <p className="text-muted text-sm leading-relaxed">{f.desc}</p>
+                <div className="p-6">
+                  <h3 className="text-2xl font-display italic mb-2">{f.name}</h3>
+                  <p className="text-muted text-sm leading-relaxed mb-4">{f.desc}</p>
+                  <a
+                    href={`mailto:${f.email}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-stroke px-4 py-2 text-xs font-medium hover:bg-white hover:text-black transition-all"
+                  >
+                    <Mail className="w-3 h-3" />
+                    Contact {f.name.split(" ")[0]}
+                  </a>
                 </div>
               </div>
             ))}
@@ -617,7 +836,7 @@ export default function App() {
       </section>
 
       {/* CONTACT US — Letter / Envelope */}
-      <section id="contact" className="contact-section bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50">
+      <section id="contact" className="contact-section section-3d bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50" style={{ perspective: "1000px" }}>
         <div className="max-w-[1200px] mx-auto px-6 md:px-10">
           <div className="text-center mb-16 md:mb-20">
             <div className="contact-reveal flex items-center justify-center gap-4 mb-8">

@@ -340,25 +340,69 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
           SPARKS NPO
         </p>
 
-        <motion.h1
-          className="text-7xl md:text-[7rem] lg:text-[9rem] font-display italic tracking-tight text-text-primary leading-[0.9] mb-6"
+        <motion.div
+          className="flex items-center gap-4 md:gap-6 mb-6"
           style={{
             opacity: textGlow,
             filter: `blur(${(1 - textGlow) * 16}px)`,
-            textShadow:
-              textGlow > 0.2
-                ? `0 0 ${textGlow * 80}px rgba(255,180,60,${textGlow * 0.6}),
-                   0 0 ${textGlow * 160}px rgba(255,100,0,${textGlow * 0.25}),
-                   0 2px 4px rgba(0,0,0,0.5)`
-                : "none",
           }}
         >
-          Sparks
-        </motion.h1>
+          {/* Logo symbol — pentagon shape */}
+          <svg viewBox="0 0 60 60" className="w-16 h-16 md:w-24 md:h-24 lg:w-28 lg:h-28" style={{
+            filter: textGlow > 0.2
+              ? `drop-shadow(0 0 ${textGlow * 30}px rgba(184,212,239,${textGlow * 0.5}))`
+              : "none",
+          }}>
+            <defs>
+              <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#e0ecf7" />
+                <stop offset="50%" stopColor="#b8d4ef" />
+                <stop offset="100%" stopColor="#89AACC" />
+              </linearGradient>
+            </defs>
+            <path
+              d="M30 4 L52 18 L52 42 L30 56 L8 42 L8 18 Z"
+              fill="none"
+              stroke="url(#logoGrad)"
+              strokeWidth="3"
+              strokeLinejoin="round"
+              opacity="0.9"
+            />
+            <path
+              d="M30 12 L44 22 L44 38 L30 48 L16 38 L16 22 Z"
+              fill="none"
+              stroke="url(#logoGrad)"
+              strokeWidth="2"
+              strokeLinejoin="round"
+              opacity="0.5"
+            />
+            <path
+              d="M30 20 L36 26 L36 34 L30 40 L24 34 L24 26 Z"
+              fill="url(#logoGrad)"
+              opacity="0.15"
+              stroke="url(#logoGrad)"
+              strokeWidth="1"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <h1
+            className="text-7xl md:text-[7rem] lg:text-[9rem] font-body font-semibold tracking-tight text-text-primary leading-[0.9]"
+            style={{
+              textShadow:
+                textGlow > 0.2
+                  ? `0 0 ${textGlow * 80}px rgba(255,180,60,${textGlow * 0.6}),
+                     0 0 ${textGlow * 160}px rgba(255,100,0,${textGlow * 0.25}),
+                     0 2px 4px rgba(0,0,0,0.5)`
+                  : "none",
+            }}
+          >
+            Sparks
+          </h1>
+        </motion.div>
 
         {/* Tagline fades in during ignite */}
         <motion.p
-          className="text-sm md:text-base text-muted/80 uppercase tracking-[0.25em] mb-6"
+          className="text-base md:text-lg text-muted/80 font-display italic tracking-[0.05em] mb-6"
           initial={{ opacity: 0, y: 10 }}
           animate={{
             opacity: phase === "ignite" || phase === "fading" ? 1 : 0,

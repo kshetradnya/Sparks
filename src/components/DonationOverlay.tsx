@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useRef } from "react";
 import type { FC } from "react";
 import { motion } from "framer-motion";
 
-type Phase = "entering" | "form" | "dissolving" | "running" | "curtain" | "done";
+type Phase = "entering" | "form" | "dissolving" | "thankyou" | "done";
 
 interface DonationOverlayProps {
   onClose: () => void;
@@ -48,14 +48,12 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
     return arr;
   }, []);
 
-  // Phase transitions — onClose stored in ref to avoid dep-array churn
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
     switch (phase) {
       case "entering":  t = setTimeout(() => setPhase("form"), 700); break;
-      case "dissolving": t = setTimeout(() => setPhase("running"), 2600); break;
-      case "running":    t = setTimeout(() => setPhase("curtain"), 2200); break;
-      case "curtain":    t = setTimeout(() => setPhase("done"), 1800); break;
+      case "dissolving": t = setTimeout(() => setPhase("thankyou"), 3000); break;
+      case "thankyou":   t = setTimeout(() => setPhase("done"), 3000); break;
       case "done":       t = setTimeout(() => onCloseRef.current(), 200); break;
       default: return;
     }
@@ -77,7 +75,7 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
       animate={{
         clipPath:
           phase === "done"
-            ? "circle(0% at 100% 50%)"
+            ? "circle(0% at 50% 50%)"
             : "circle(150% at 50% 100%)",
       }}
       transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
@@ -158,7 +156,7 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
                 y: `${(p.ty - p.y) * 3}px`,
                 opacity: [0, 1, 1, 0.7],
               }}
-              transition={{ duration: 2.2, delay: p.delay, ease: "easeInOut" }}
+              transition={{ duration: 2.5, delay: p.delay, ease: "easeInOut" }}
             >
               {p.symbol}
             </motion.div>
@@ -171,92 +169,55 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
         </motion.div>
       )}
 
-      {/* === RUNNING — robot grabs money and runs === */}
-      {phase === "running" && (
-        <motion.div className="absolute inset-0 flex items-end justify-center overflow-hidden"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <motion.p
-            className="absolute top-1/3 left-1/2 -translate-x-1/2 text-3xl md:text-5xl font-display italic text-text-primary"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: [0, 1, 1, 0], scale: [0.8, 1, 1, 0.9] }}
-            transition={{ duration: 2.2, times: [0, 0.2, 0.7, 1] }}>
-            Thank you!
-          </motion.p>
-
-          <motion.div className="mb-12"
-            initial={{ x: -200 }}
-            animate={{ x: [0, 0, 2200] }}
-            transition={{ duration: 2.2, times: [0, 0.3, 1], ease: "easeIn" }}>
-            <svg width="130" height="170" viewBox="0 0 130 170">
-              <rect x="35" y="8" width="52" height="40" rx="13" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-              <circle cx="50" cy="26" r="6.5" fill="#FFA500" />
-              <circle cx="72" cy="26" r="6.5" fill="#FFA500" />
-              <circle cx="50" cy="26" r="2.5" fill="#FFD700" />
-              <circle cx="72" cy="26" r="2.5" fill="#FFD700" />
-              <path d="M48 38 Q61 47 74 38" stroke="#FFA500" strokeWidth="2" fill="none" strokeLinecap="round" />
-              <line x1="61" y1="8" x2="61" y2="0" stroke="#555" strokeWidth="2" />
-              <circle cx="61" cy="0" r="3" fill="#FFA500" />
-              <rect x="54" y="48" width="14" height="8" rx="3" fill="#2a2a4e" />
-              <rect x="30" y="56" width="62" height="52" rx="9" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-              <circle cx="61" cy="80" r="8" fill="#b8d4ef" opacity="0.5" />
-              <circle cx="61" cy="80" r="3.5" fill="#e0ecf7" />
-              <motion.g animate={{ y: [0, -3, 0] }} transition={{ duration: 0.35, repeat: Infinity }}>
-                <circle cx="102" cy="48" r="22" fill="#FFD700" opacity="0.85" stroke="#DAA520" strokeWidth="2" />
-                <text x="102" y="55" textAnchor="middle" fill="#333" fontSize="18" fontWeight="bold">$</text>
-              </motion.g>
-              <path d="M92 66 L102 54 L102 40" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              <motion.g animate={{ rotate: [-25, 25, -25] }} transition={{ duration: 0.3, repeat: Infinity }} style={{ transformOrigin: "30px 66px" }}>
-                <path d="M30 66 L15 85 L8 100" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              </motion.g>
-              <motion.g animate={{ rotate: [-22, 22, -22] }} transition={{ duration: 0.3, repeat: Infinity }} style={{ transformOrigin: "48px 108px" }}>
-                <path d="M48 108 L38 138 L28 158" stroke="#2a2a4e" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <rect x="18" y="155" width="20" height="8" rx="3" fill="#1a1a2e" />
-              </motion.g>
-              <motion.g animate={{ rotate: [22, -22, 22] }} transition={{ duration: 0.3, repeat: Infinity }} style={{ transformOrigin: "74px 108px" }}>
-                <path d="M74 108 L84 138 L94 158" stroke="#2a2a4e" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <rect x="84" y="155" width="20" height="8" rx="3" fill="#1a1a2e" />
-              </motion.g>
-            </svg>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* === CURTAIN — worker robot slides across === */}
-      {phase === "curtain" && (
-        <motion.div className="absolute inset-0 overflow-hidden">
+      {/* === THANK YOU — clean text, no robot === */}
+      {phase === "thankyou" && (
+        <motion.div
+          className="absolute inset-0 flex flex-col items-center justify-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
           <motion.div
-            className="absolute inset-y-0 w-full bg-surface/95 backdrop-blur-sm flex items-center justify-center"
-            initial={{ x: "-100%" }} animate={{ x: "0%" }}
-            transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}>
-            <motion.div
-              className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2"
-              animate={{ x: [40, 0] }} transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}>
-              <svg width="90" height="130" viewBox="0 0 90 130">
-                <rect x="22" y="5" width="46" height="34" rx="12" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-                <circle cx="36" cy="20" r="6" fill="#b8d4ef" />
-                <circle cx="54" cy="20" r="6" fill="#b8d4ef" />
-                <circle cx="36" cy="20" r="2.5" fill="#e0ecf7" />
-                <circle cx="54" cy="20" r="2.5" fill="#e0ecf7" />
-                <path d="M20 12 L45 2 L70 12" stroke="#FFA500" strokeWidth="3" fill="none" strokeLinecap="round" />
-                <line x1="45" y1="5" x2="45" y2="0" stroke="#555" strokeWidth="2" />
-                <circle cx="45" cy="0" r="3" fill="#b8d4ef" />
-                <path d="M36 30 Q45 36 54 30" stroke="#b8d4ef" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-                <rect x="40" y="39" width="10" height="7" rx="3" fill="#2a2a4e" />
-                <rect x="18" y="46" width="54" height="42" rx="7" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-                <circle cx="45" cy="64" r="6" fill="#b8d4ef" opacity="0.4" />
-                <path d="M18 56 L5 64 L0 78" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M72 56 L85 64 L90 78" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M32 88 L28 108 L24 125" stroke="#2a2a4e" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M58 88 L62 108 L66 125" stroke="#2a2a4e" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <rect x="16" y="122" width="16" height="7" rx="3" fill="#1a1a2e" />
-                <rect x="58" y="122" width="16" height="7" rx="3" fill="#1a1a2e" />
-              </svg>
-            </motion.div>
-            <motion.p className="text-muted text-sm uppercase tracking-widest"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-              Returning you home...
-            </motion.p>
+            className="w-20 h-20 rounded-full border-2 border-[#b8d4ef]/30 flex items-center justify-center mb-8"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+          >
+            <motion.svg
+              viewBox="0 0 24 24"
+              className="w-10 h-10 text-[#b8d4ef]"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <motion.path
+                d="M20 6L9 17l-5-5"
+                initial={{ pathLength: 0 }}
+                animate={{ pathLength: 1 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              />
+            </motion.svg>
           </motion.div>
+
+          <motion.h2
+            className="text-4xl md:text-6xl font-display italic text-text-primary mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.6 }}
+          >
+            Thank you!
+          </motion.h2>
+
+          <motion.p
+            className="text-muted text-sm max-w-sm text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+          >
+            Your generosity helps us ignite more sparks. We'll put every cent to good use.
+          </motion.p>
         </motion.div>
       )}
     </motion.div>
