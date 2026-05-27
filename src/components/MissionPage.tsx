@@ -33,7 +33,7 @@ const VALUES = [
 const TIMELINE = [
   { year: "2024", event: "Sparks founded by Nitya Jain with a vision to make STEM accessible to every generation." },
   { year: "2024", event: "First Handheld Fan Workshop — 30 kids build their own fans from scratch." },
-  { year: "2025", event: "AI for Seniors launches, helping 50+ senior citizens embrace technology." },
+  { year: "2025", event: "Vision Spectacles begins, building free smart spectacles for blind people." },
   { year: "2025", event: "AI for Good public sessions begin. 500+ lives impacted across all programs." },
   { year: "2025", event: "Presented at SPARKS x SRMD spiritual retreat to a wider audience." },
   { year: "2026", event: "Expanding to new cities. Community STEM Day, AI Literacy for All, and Tech & Tea in the pipeline." },
