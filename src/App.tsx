@@ -295,9 +295,7 @@ export default function App() {
 
   return (
     <div className="bg-bg min-h-screen text-text-primary selection:bg-text-primary selection:text-bg overflow-x-hidden">
-      <AnimatePresence>
-        {isLoading && <LoadingScreen onComplete={handleComplete} />}
-      </AnimatePresence>
+      {isLoading && <LoadingScreen onComplete={handleComplete} />}
 
       {/* Mission Page Overlay */}
       <AnimatePresence>

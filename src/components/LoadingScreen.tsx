@@ -40,18 +40,22 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
   const embersRef = useRef<Ember[]>([]);
   const rafRef = useRef(0);
   const frameRef = useRef(0);
+  const onCompleteRef = useRef(onComplete);
+  useEffect(() => { onCompleteRef.current = onComplete; });
 
-  /* Phase timing */
+  /* Phase timing — sequential via phase state to avoid strict-mode timer issues */
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase("strike"), 400),
-      setTimeout(() => setPhase("shower"), 900),
-      setTimeout(() => setPhase("ignite"), 2600),
-      setTimeout(() => setPhase("fading"), 3800),
-      setTimeout(onComplete, 4500),
-    ];
-    return () => timers.forEach(clearTimeout);
-  }, [onComplete]);
+    let t: ReturnType<typeof setTimeout>;
+    switch (phase) {
+      case "dark":     t = setTimeout(() => setPhase("strike"), 400); break;
+      case "strike":   t = setTimeout(() => setPhase("shower"), 500); break;
+      case "shower":   t = setTimeout(() => setPhase("ignite"), 1700); break;
+      case "ignite":   t = setTimeout(() => setPhase("fading"), 1200); break;
+      case "fading":   t = setTimeout(() => onCompleteRef.current(), 700); break;
+      default: return;
+    }
+    return () => clearTimeout(t);
+  }, [phase]);
 
   /* Text glow ramp */
   useEffect(() => {
@@ -287,10 +291,14 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
     };
   }, [phase, spawnSparks, spawnEmbers]);
 
+  const done = phase === "fading";
+
   return (
     <motion.div
       className="fixed inset-0 z-[9999] bg-bg overflow-hidden"
-      exit={{ opacity: 0, transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] } }}
+      animate={{ opacity: done ? 0 : 1 }}
+      transition={{ duration: done ? 0.7 : 0 }}
+      style={{ pointerEvents: done ? "none" : "auto" }}
     >
       {/* Spark canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 z-20 pointer-events-none" />
