@@ -1,11 +1,60 @@
 import { useEffect } from "react";
 import type { FC } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Heart, Users, Lightbulb, Globe } from "lucide-react";
 
 interface MissionPageProps {
   onClose: () => void;
+  focusId?: string | null;
 }
+
+const FOCUS_AREAS = [
+  {
+    id: "hands-on",
+    icon: Lightbulb,
+    title: "Hands-On Learning",
+    tagline: "Learn by building, not by watching.",
+    desc: "We believe in learning by doing. Every workshop puts tools in people's hands — from soldering irons to AI prompts.",
+    longDesc:
+      "At Sparks, passive learning has no place. Our philosophy is rooted in the belief that understanding comes from creation. When a child wires a circuit and watches a fan spin, they don't just learn about electricity — they internalize the confidence that they can build things.\n\nEvery program we run is designed around tactile, hands-on experiences. We provide real components, real tools, and real challenges. Our volunteers don't lecture — they guide. They sit beside participants, ask questions, and let curiosity drive the learning.\n\nThis approach has proven transformative. Participants retain more, engage more, and come back for more. The spark of creation is addictive — and that's exactly the point.",
+    highlights: [
+      "Real components and tools in every session",
+      "Volunteer mentors guide, never lecture",
+      "Project-based learning with take-home creations",
+      "Iterative design — build, test, improve",
+    ],
+  },
+  {
+    id: "every-gen",
+    icon: Users,
+    title: "Every Generation",
+    tagline: "From 8 to 80, innovation knows no age.",
+    desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.",
+    longDesc:
+      "Technology doesn't discriminate by age — and neither do we. Sparks was founded on the observation that the digital divide isn't just about access to devices. It's about confidence, context, and community.\n\nFor children, we make STEM tangible and exciting. For seniors, we make technology approachable and relevant. For everyone in between, we demystify AI and empower responsible, productive use.\n\nOur programs are intentionally designed with age-appropriate pacing, vocabulary, and outcomes. A workshop for 8-year-olds looks nothing like a session for 80-year-olds — but both are built on the same foundation: respect for the learner and a commitment to meeting them where they are.",
+    highlights: [
+      "Age-appropriate curriculum for every group",
+      "High volunteer-to-participant ratios",
+      "Inclusive by design — no prerequisites",
+      "Programs for kids, adults, and seniors",
+    ],
+  },
+  {
+    id: "community",
+    icon: Globe,
+    title: "Community First",
+    tagline: "We go where we're needed.",
+    desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.",
+    longDesc:
+      "Sparks doesn't wait for communities to come to us. We go to schools, senior homes, and community centers — bringing innovation directly to every doorstep.\n\nBefore launching any program in a new location, we listen. We talk to community leaders, understand local needs, and design sessions that address real gaps. A farming community might need different AI tools than an urban school. A senior home with limited internet requires a different approach than a tech-savvy college campus.\n\nThis community-first philosophy means our impact is deeper and more lasting. We're not dropping in with a one-size-fits-all curriculum. We're building relationships and creating programs that genuinely serve.",
+    highlights: [
+      "Programs designed around community needs",
+      "Partnerships with local schools and centers",
+      "On-site workshops — we come to you",
+      "Feedback-driven program iteration",
+    ],
+  },
+];
 
 const VALUES = [
   {
@@ -30,20 +79,124 @@ const VALUES = [
   },
 ];
 
-const TIMELINE = [
-  { year: "2024", event: "Sparks founded by Nitya Jain with a vision to make STEM accessible to every generation." },
-  { year: "2024", event: "First Handheld Fan Workshop — 30 kids build their own fans from scratch." },
-  { year: "2025", event: "AI for Seniors launches, helping 50+ senior citizens embrace technology." },
-  { year: "2025", event: "AI for Good public sessions begin. 500+ lives impacted across all programs." },
-  { year: "2025", event: "Presented at SPARKS x SRMD spiritual retreat to a wider audience." },
-  { year: "2026", event: "Expanding to new cities. Community STEM Day, AI Literacy for All, and Tech & Tea in the pipeline." },
-];
-
-export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
+export const MissionPage: FC<MissionPageProps> = ({ onClose, focusId }) => {
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
+
+  const focusArea = focusId ? FOCUS_AREAS.find((f) => f.id === focusId) : null;
+
+  if (focusArea) {
+    const Icon = focusArea.icon;
+    return (
+      <motion.div
+        className="fixed inset-0 z-[9999] bg-bg overflow-y-auto"
+        initial={{ clipPath: "circle(0% at 50% 50%)" }}
+        animate={{ clipPath: "circle(150% at 50% 50%)" }}
+        exit={{ clipPath: "circle(0% at 50% 50%)" }}
+        transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <div
+          className="fixed inset-0 pointer-events-none opacity-[0.02]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
+
+        <motion.button
+          onClick={onClose}
+          className="fixed top-6 left-6 z-[10000] flex items-center gap-2 rounded-full bg-surface/80 backdrop-blur-md border border-stroke px-5 py-3 text-sm text-text-primary hover:bg-white hover:text-black transition-all group"
+          initial={{ opacity: 0, x: -30 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.4, duration: 0.5 }}
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+          Back
+        </motion.button>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-6 md:px-12 pt-28 pb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+          >
+            <div className="w-16 h-16 rounded-2xl bg-surface border border-stroke flex items-center justify-center mb-8">
+              <Icon className="w-7 h-7 text-[#b8d4ef]" />
+            </div>
+
+            <h1 className="text-5xl md:text-7xl font-display italic tracking-tight mb-4 leading-[0.95]">
+              {focusArea.title}
+            </h1>
+            <p className="text-xl md:text-2xl text-text-primary/60 font-light mb-16">
+              {focusArea.tagline}
+            </p>
+          </motion.div>
+
+          <motion.div
+            className="mb-20"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.7 }}
+          >
+            <div className="text-text-primary/80 text-lg leading-relaxed space-y-6">
+              {focusArea.longDesc.split("\n\n").map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="mb-20"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
+          >
+            <h2 className="text-2xl font-display italic mb-8">Key principles.</h2>
+            <div className="bg-surface border border-stroke rounded-3xl p-8">
+              <ul className="space-y-4">
+                {focusArea.highlights.map((h, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-3 text-text-primary/80"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 + i * 0.1, duration: 0.4 }}
+                  >
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#b8d4ef] mt-2.5 flex-shrink-0" />
+                    <span>{h}</span>
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="text-center"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.6 }}
+          >
+            <button
+              onClick={() => {
+                onClose();
+                setTimeout(() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" }), 800);
+              }}
+              className="group relative inline-flex items-center gap-2 rounded-full text-sm px-8 py-4 bg-text-primary text-bg font-medium hover:scale-[1.02] transition-all duration-300 overflow-hidden"
+            >
+              <span className="absolute inset-0 accent-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="absolute inset-[2px] bg-bg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+              <span className="relative z-10 group-hover:text-text-primary transition-colors flex items-center gap-2">
+                Get Involved <ArrowUpRight className="w-4 h-4" />
+              </span>
+            </button>
+          </motion.div>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
@@ -53,7 +206,6 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
       exit={{ clipPath: "circle(0% at 50% 50%)" }}
       transition={{ duration: 0.7, ease: [0.4, 0, 0.2, 1] }}
     >
-      {/* Grid pattern */}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.02]"
         style={{
@@ -63,7 +215,6 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
         }}
       />
 
-      {/* Back button */}
       <motion.button
         onClick={onClose}
         className="fixed top-6 left-6 z-[10000] flex items-center gap-2 rounded-full bg-surface/80 backdrop-blur-md border border-stroke px-5 py-3 text-sm text-text-primary hover:bg-white hover:text-black transition-all group"
@@ -77,7 +228,7 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12 pt-28 pb-24">
 
-        {/* ═══ HERO ═══ */}
+        {/* HERO */}
         <motion.div
           className="mb-24 md:mb-32"
           initial={{ opacity: 0, y: 60 }}
@@ -103,7 +254,7 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
           </p>
         </motion.div>
 
-        {/* ═══ THE STORY ═══ */}
+        {/* THE STORY */}
         <motion.div
           className="mb-24 md:mb-32"
           initial={{ opacity: 0, y: 40 }}
@@ -118,12 +269,12 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
                 Sparks began with a simple observation: technology is advancing faster than most people can keep up. Kids are told to "learn to code" but never shown why it matters. Seniors are left behind in a digital-first world. And everyday people are overwhelmed by AI headlines with no guidance on what it means for their lives.
               </p>
               <p>
-                Founded by Nitya Jain — a Cambridge Checkpoint World Topper pursuing IBDP — Sparks was born out of a conviction that education shouldn't be passive. When a child builds a working fan from a motor and wires, they don't just learn physics — they discover they can create. When a grandparent sends their first voice message, they don't just learn tech — they feel less alone.
+                Founded by Nitya Jain — a Cambridge Checkpoint World Topper — Sparks was born out of a conviction that education shouldn't be passive. When a child builds a working fan from a motor and wires, they don't just learn physics — they discover they can create. When a grandparent sends their first voice message, they don't just learn tech — they feel less alone.
               </p>
             </div>
             <div className="text-text-primary/80 text-lg leading-relaxed space-y-6">
               <p>
-                Joined by co-founders Kshetradnya (an ML enthusiast pursuing HSC) and Aagam Jain (a creative force pursuing A Levels), the team grew from a weekend project into a movement. Three programs, 500+ lives touched, and a growing community of volunteers who believe that the best way to learn is by doing.
+                Joined by co-founders Kshetradnya (an ML enthusiast) and Aagam Jain (a creative force), the team grew from a weekend project into a movement. Three programs, 500+ lives touched, and a growing community of volunteers who believe that the best way to learn is by doing.
               </p>
               <p>
                 Today, Sparks operates across schools, community centers, and senior homes in Mumbai — with plans to expand to new cities. We're not just teaching skills. We're building confidence, one spark at a time.
@@ -132,7 +283,7 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
           </div>
         </motion.div>
 
-        {/* ═══ VALUES ═══ */}
+        {/* VALUES */}
         <motion.div
           className="mb-24 md:mb-32"
           initial={{ opacity: 0, y: 40 }}
@@ -169,51 +320,12 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
           </div>
         </motion.div>
 
-        {/* ═══ TIMELINE ═══ */}
-        <motion.div
-          className="mb-24 md:mb-32"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.7 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-display italic mb-12">Our journey so far.</h2>
-
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-4 md:left-8 top-0 bottom-0 w-px bg-stroke" />
-
-            <div className="space-y-8">
-              {TIMELINE.map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="flex gap-6 md:gap-10 items-start relative"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + i * 0.1, duration: 0.4 }}
-                >
-                  {/* Dot on timeline */}
-                  <div className="relative z-10 flex-shrink-0">
-                    <div className="w-8 md:w-16 flex justify-center">
-                      <div className="w-3 h-3 rounded-full bg-[#b8d4ef] border-2 border-bg" />
-                    </div>
-                  </div>
-
-                  <div className="pb-2">
-                    <span className="text-xs text-[#b8d4ef] uppercase tracking-widest font-medium">{item.year}</span>
-                    <p className="text-text-primary/80 mt-1 leading-relaxed">{item.event}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-
-        {/* ═══ CTA ═══ */}
+        {/* CTA */}
         <motion.div
           className="text-center"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
+          transition={{ delay: 1, duration: 0.6 }}
         >
           <h2 className="text-3xl md:text-5xl font-display italic mb-6">Ready to spark change?</h2>
           <p className="text-muted text-sm max-w-md mx-auto mb-8">

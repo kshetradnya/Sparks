@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hls from "hls.js";
-import { ArrowUpRight, Bell } from "lucide-react";
+import { ArrowUpRight, Bell, Mail, ExternalLink } from "lucide-react";
 
 import { LoadingScreen } from "./components/LoadingScreen";
 import { ContactForm } from "./components/ContactForm";
@@ -98,20 +98,23 @@ const founders = [
   {
     name: "Nitya Jain",
     role: "Founder",
-    desc: "Pursuing IBDP, Nitya is a Cambridge Checkpoint World Topper and one of only 70 students selected for HVBGA. Her academic excellence fuels her drive to make quality education accessible to all.",
+    desc: "A Cambridge Checkpoint World Topper and one of only 70 students selected for HVBGA. Her academic excellence fuels her drive to make quality education accessible to all.",
     img: "https://images.pexels.com/photos/3184611/pexels-photo-3184611.jpeg?auto=compress&cs=tinysrgb&w=400",
+    email: "nitya@sparksnpo.org",
   },
   {
     name: "Kshetradnya",
     role: "Co-Founder",
-    desc: "Pursuing HSC with a deep love for mathematics and machine learning. When not building ML models or solving equations, you'll find him gaming — bringing the same strategic thinking to both code and controllers.",
+    desc: "A deep love for mathematics and machine learning drives everything he does. When not building ML models or solving equations, you'll find him gaming — bringing the same strategic thinking to both code and controllers.",
     img: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=400",
+    email: "kshetradnya@sparksnpo.org",
   },
   {
     name: "Aagam Jain",
     role: "Co-Founder",
-    desc: "The creative force behind Sparks. Pursuing A Levels, Aagam brings artistry to everything — from playing guitar and composing melodies to crafting the creative vision of our programs.",
+    desc: "The creative force behind Sparks. Aagam brings artistry to everything — from playing guitar and composing melodies to crafting the creative vision of our programs.",
     img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
+    email: "aagam@sparksnpo.org",
   },
 ];
 
@@ -130,18 +133,21 @@ const futureEvents = [
     date: "June 15, 2026",
     desc: "A hands-on electronics and engineering workshop for kids aged 8-14. Build, break, and learn!",
     tag: "Workshop",
+    meetingLink: "https://meet.google.com/sparks-stem-day",
   },
   {
     title: "AI Literacy for All",
     date: "July 8, 2026",
     desc: "Our monthly public session on using AI tools responsibly — from ChatGPT to image generators.",
     tag: "Public Talk",
+    meetingLink: "https://meet.google.com/sparks-ai-literacy",
   },
   {
     title: "Tech & Tea",
     date: "August 22, 2026",
     desc: "A relaxed afternoon for seniors to brush up on AI skills, ask questions, and connect with peers.",
     tag: "Seniors",
+    meetingLink: "https://meet.google.com/sparks-tech-tea",
   },
 ];
 
@@ -152,11 +158,13 @@ export default function App() {
   const [partnerHovered, setPartnerHovered] = useState(false);
   const [activeEvent, setActiveEvent] = useState<EventData | null>(null);
   const [showMission, setShowMission] = useState(false);
+  const [activeMissionFocus, setActiveMissionFocus] = useState<string | null>(null);
 
   const handleComplete = useCallback(() => setIsLoading(false), []);
   const handleDonationClose = useCallback(() => setShowDonation(false), []);
   const handleEventClose = useCallback(() => setActiveEvent(null), []);
   const handleMissionClose = useCallback(() => setShowMission(false), []);
+  const handleMissionFocusClose = useCallback(() => setActiveMissionFocus(null), []);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const footerVideoRef = useRef<HTMLVideoElement>(null);
@@ -299,7 +307,7 @@ export default function App() {
 
       {/* Mission Page Overlay */}
       <AnimatePresence>
-        {showMission && <MissionPage onClose={handleMissionClose} />}
+        {showMission && <MissionPage onClose={handleMissionClose} focusId={activeMissionFocus} />}
       </AnimatePresence>
 
       {/* Event Detail Overlay */}
@@ -363,7 +371,7 @@ export default function App() {
 
         <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-5xl mx-auto h-full justify-center">
           <p className="blur-in text-xs text-muted uppercase tracking-[0.3em] mb-8">SPARKS NPO</p>
-          <h1 className="text-7xl md:text-[7rem] lg:text-[9rem] font-display italic leading-[0.9] tracking-tight text-text-primary mb-6">
+          <h1 className="text-7xl md:text-[7rem] lg:text-[9rem] font-body font-semibold leading-[0.9] tracking-tight text-text-primary mb-6">
             Sparks
           </h1>
           <div className="blur-in text-xl md:text-3xl text-text-primary/90 font-light tracking-wide mb-6">
@@ -485,11 +493,11 @@ export default function App() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 perspective-[1000px]">
             {[
-              { title: "Hands-On Learning", desc: "We believe in learning by doing. Every workshop puts tools in people's hands — from soldering irons to AI prompts.", icon: "01" },
-              { title: "Every Generation", desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.", icon: "02" },
-              { title: "Community First", desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.", icon: "03" },
+              { id: "hands-on", title: "Hands-On Learning", desc: "We believe in learning by doing. Every workshop puts tools in people's hands — from soldering irons to AI prompts.", icon: "01" },
+              { id: "every-gen", title: "Every Generation", desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.", icon: "02" },
+              { id: "community", title: "Community First", desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.", icon: "03" },
             ].map((pillar, i) => (
-              <div key={i} onClick={() => setShowMission(true)} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu overflow-hidden cursor-pointer">
+              <div key={i} onClick={() => { setActiveMissionFocus(pillar.id); setShowMission(true); }} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu overflow-hidden cursor-pointer">
                 <div className="absolute top-0 right-0 p-8 text-6xl opacity-10 font-display italic select-none text-stroke">{pillar.icon}</div>
                 <h3 className="text-2xl font-display italic mb-4 group-hover:translate-x-2 transition-transform">{pillar.title}</h3>
                 <p className="text-muted leading-relaxed group-hover:text-text-primary/80 transition-colors">{pillar.desc}</p>
@@ -499,6 +507,17 @@ export default function App() {
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               </div>
             ))}
+          </div>
+
+          {/* Main Mission Page redirect */}
+          <div className="mission-reveal flex justify-center mt-16">
+            <button
+              onClick={() => { setActiveMissionFocus(null); setShowMission(true); }}
+              className="group flex items-center gap-3 rounded-full border border-stroke px-8 py-4 text-sm font-medium hover:bg-white hover:text-black transition-all"
+            >
+              <span>Read our full mission</span>
+              <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+            </button>
           </div>
         </div>
       </section>
@@ -553,9 +572,16 @@ export default function App() {
                 <p className="text-muted text-sm leading-relaxed mb-6">{ev.desc}</p>
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-muted uppercase tracking-widest">{ev.date}</span>
-                  <div className="w-10 h-10 rounded-full border border-stroke flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    <Bell className="w-4 h-4" />
-                  </div>
+                  <a
+                    href={ev.meetingLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center gap-2 rounded-full border border-stroke px-4 py-2 text-xs font-medium hover:bg-white hover:text-black transition-all"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    Join Event
+                  </a>
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
               </div>
@@ -599,16 +625,23 @@ export default function App() {
           <div className="founders-grid grid grid-cols-1 md:grid-cols-3 gap-8">
             {founders.map((f, i) => (
               <div key={i} className="founder-card group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500">
-                <div className="aspect-square overflow-hidden relative">
+                <div className="aspect-[4/3] overflow-hidden relative">
                   <img src={f.img} alt={f.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
                   <div className="absolute inset-0 bg-gradient-to-t from-bg/90 via-bg/20 to-transparent" />
                   <div className="absolute bottom-6 left-6">
                     <span className="bg-bg/80 backdrop-blur-md px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest border border-stroke">{f.role}</span>
                   </div>
                 </div>
-                <div className="p-8">
-                  <h3 className="text-2xl font-display italic mb-3">{f.name}</h3>
-                  <p className="text-muted text-sm leading-relaxed">{f.desc}</p>
+                <div className="p-6">
+                  <h3 className="text-2xl font-display italic mb-2">{f.name}</h3>
+                  <p className="text-muted text-sm leading-relaxed mb-4">{f.desc}</p>
+                  <a
+                    href={`mailto:${f.email}`}
+                    className="inline-flex items-center gap-2 rounded-full border border-stroke px-4 py-2 text-xs font-medium hover:bg-white hover:text-black transition-all"
+                  >
+                    <Mail className="w-3 h-3" />
+                    Contact {f.name.split(" ")[0]}
+                  </a>
                 </div>
               </div>
             ))}
