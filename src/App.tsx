@@ -24,6 +24,7 @@ import aagamImg from "../Aagam.png";
 import kshetraImg from "../Kshetra.png";
 import nityaImg from "../Nitya.png";
 import vivanImg from "../Vivan.png";
+import sparksLogo from "../image-removebg-preview.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -272,7 +273,7 @@ export default function App() {
             <div className="w-9 h-9 rounded-full relative group cursor-pointer overflow-hidden flex items-center justify-center transition-transform hover:scale-110">
               <div className="absolute inset-0 accent-gradient group-hover:rotate-180 transition-transform duration-700" />
               <div className="w-8 h-8 rounded-full bg-bg relative z-10 flex items-center justify-center">
-                <span className="font-display italic text-[13px]">S</span>
+                <img src={sparksLogo} alt="Sparks logo" className="h-6 w-6 object-contain" />
               </div>
             </div>
             <div className="w-px h-5 bg-stroke mx-1 hidden md:block" />
@@ -328,7 +329,10 @@ export default function App() {
         </div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-5xl mx-auto h-full justify-center">
-          <p className="blur-in text-xs text-muted uppercase tracking-[0.3em] mb-8">SPARKS NPO</p>
+          <div className="blur-in mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-bg/40 px-4 py-2 backdrop-blur-md">
+            <img src={sparksLogo} alt="Sparks logo" className="h-6 w-6 object-contain" />
+            <span className="text-xs text-muted uppercase tracking-[0.3em]">SPARKS NPO</span>
+          </div>
           <h1 className="text-7xl md:text-[7rem] lg:text-[9rem] font-display italic leading-[0.9] tracking-tight text-text-primary mb-6">
             Sparks
           </h1>

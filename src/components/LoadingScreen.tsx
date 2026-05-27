@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import type { FC } from "react";
 import { motion } from "framer-motion";
+import sparksLogo from "../../image-removebg-preview.png";
 
 interface LoadingScreenProps {
   onComplete: () => void;
@@ -47,11 +48,11 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
     switch (phase) {
-      case "dark":     t = setTimeout(() => setPhase("strike"), 400); break;
-      case "strike":   t = setTimeout(() => setPhase("shower"), 500); break;
-      case "shower":   t = setTimeout(() => setPhase("ignite"), 1700); break;
-      case "ignite":   t = setTimeout(() => setPhase("fading"), 1200); break;
-      case "fading":   t = setTimeout(() => onCompleteRef.current(), 700); break;
+      case "dark":     t = setTimeout(() => setPhase("strike"), 300); break;
+      case "strike":   t = setTimeout(() => setPhase("shower"), 650); break;
+      case "shower":   t = setTimeout(() => setPhase("ignite"), 1350); break;
+      case "ignite":   t = setTimeout(() => setPhase("fading"), 1050); break;
+      case "fading":   t = setTimeout(() => onCompleteRef.current(), 750); break;
       default: return;
     }
     return () => clearTimeout(t);
@@ -61,9 +62,9 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
   useEffect(() => {
     if (phase !== "ignite" && phase !== "fading") return;
     const start = performance.now();
-    const dur = phase === "ignite" ? 800 : 500;
+    const dur = phase === "ignite" ? 950 : 650;
     const from = textGlow;
-    const to = phase === "fading" ? 1 : 0.85;
+    const to = phase === "fading" ? 1 : 0.9;
     const tick = (now: number) => {
       const p = Math.min((now - start) / dur, 1);
       setTextGlow(from + (to - from) * (1 - Math.pow(1 - p, 3)));
@@ -78,16 +79,16 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
     (cx: number, cy: number, count: number, force: number, spread: number) => {
       for (let i = 0; i < count; i++) {
         const angle = -Math.PI / 2 + (Math.random() - 0.5) * spread;
-        const speed = force * (0.4 + Math.random() * 0.8);
+        const speed = force * (0.28 + Math.random() * 0.55);
         const bright = Math.random();
         sparksRef.current.push({
-          x: cx + (Math.random() - 0.5) * 8,
-          y: cy + (Math.random() - 0.5) * 4,
-          vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 2,
+          x: cx + (Math.random() - 0.5) * 6,
+          y: cy + (Math.random() - 0.5) * 3,
+          vx: Math.cos(angle) * speed + (Math.random() - 0.5) * 0.7,
           vy: Math.sin(angle) * speed,
           life: 1,
-          maxLife: 0.4 + Math.random() * 1.0,
-          size: bright > 0.7 ? 1.5 + Math.random() * 2.5 : 0.5 + Math.random() * 1.5,
+          maxLife: 0.8 + Math.random() * 1.1,
+          size: bright > 0.7 ? 1.1 + Math.random() * 1.8 : 0.5 + Math.random() * 1.1,
           bright,
           trail: [],
         });
@@ -102,11 +103,11 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
       embersRef.current.push({
         x: cx + (Math.random() - 0.5) * 120,
         y: cy + (Math.random() - 0.5) * 40,
-        vx: (Math.random() - 0.5) * 0.8,
-        vy: -(0.3 + Math.random() * 1.2),
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: -(0.18 + Math.random() * 0.55),
         life: 1,
-        size: 1 + Math.random() * 2.5,
-        hue: 20 + Math.random() * 25,
+        size: 0.8 + Math.random() * 1.8,
+        hue: 205 + Math.random() * 25,
       });
     }
   }, []);
@@ -123,7 +124,7 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
       c.height = innerHeight * devicePixelRatio;
       c.style.width = innerWidth + "px";
       c.style.height = innerHeight + "px";
-      ctx.scale(devicePixelRatio, devicePixelRatio);
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
     };
     resize();
     window.addEventListener("resize", resize);
@@ -144,36 +145,36 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
         if (flash > 0) {
           ctx.save();
           ctx.globalAlpha = flash * 0.6;
-          const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 200);
+          const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 220);
           g.addColorStop(0, "#fff");
-          g.addColorStop(0.3, "rgba(255,200,100,0.8)");
+          g.addColorStop(0.3, "rgba(184,212,239,0.7)");
           g.addColorStop(1, "transparent");
           ctx.fillStyle = g;
           ctx.fillRect(0, 0, W, H);
           ctx.restore();
         }
         // Initial burst
-        if (frameRef.current % 2 === 0) spawnSparks(cx, cy, 12, 14, Math.PI * 1.6);
+        if (frameRef.current % 3 === 0) spawnSparks(cx, cy, 7, 9, Math.PI * 1.15);
       }
 
       /* ── SHOWER phase: continuous cascading sparks ── */
       if (phase === "shower") {
         // Main shower from center
-        if (frameRef.current % 2 === 0) spawnSparks(cx, cy, 8, 10, Math.PI * 1.4);
+        if (frameRef.current % 3 === 0) spawnSparks(cx, cy, 5, 7, Math.PI * 1.05);
         // Side cascades
         if (frameRef.current % 4 === 0) {
-          spawnSparks(cx - 60, cy + 10, 3, 7, Math.PI);
-          spawnSparks(cx + 60, cy + 10, 3, 7, Math.PI);
+          spawnSparks(cx - 52, cy + 8, 2, 5, Math.PI * 0.8);
+          spawnSparks(cx + 52, cy + 8, 2, 5, Math.PI * 0.8);
         }
         // Embers
-        if (frameRef.current % 6 === 0) spawnEmbers(cx, cy, 2);
+        if (frameRef.current % 7 === 0) spawnEmbers(cx, cy, 2);
 
         // Core glow
         ctx.save();
-        const pulse = 0.15 + Math.sin(frameRef.current * 0.1) * 0.05;
+        const pulse = 0.12 + Math.sin(frameRef.current * 0.055) * 0.04;
         const coreG = ctx.createRadialGradient(cx, cy, 0, cx, cy, 160);
-        coreG.addColorStop(0, `rgba(255,180,60,${pulse})`);
-        coreG.addColorStop(0.5, `rgba(255,100,20,${pulse * 0.3})`);
+        coreG.addColorStop(0, `rgba(224,236,247,${pulse})`);
+        coreG.addColorStop(0.5, `rgba(78,133,191,${pulse * 0.45})`);
         coreG.addColorStop(1, "transparent");
         ctx.fillStyle = coreG;
         ctx.fillRect(cx - 200, cy - 200, 400, 400);
@@ -182,14 +183,14 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
 
       /* ── IGNITE phase: big burst then dying down ── */
       if (phase === "ignite") {
-        if (frameRef.current % 3 === 0) spawnSparks(cx, cy, 5, 12, Math.PI * 2);
+        if (frameRef.current % 5 === 0) spawnSparks(cx, cy, 3, 7, Math.PI * 1.5);
         if (frameRef.current % 5 === 0) spawnEmbers(cx, cy, 3);
 
         // Bright reveal glow
         ctx.save();
         const revealG = ctx.createRadialGradient(cx, cy, 0, cx, cy, 280);
-        revealG.addColorStop(0, "rgba(255,200,100,0.2)");
-        revealG.addColorStop(0.4, "rgba(255,140,40,0.06)");
+        revealG.addColorStop(0, "rgba(224,236,247,0.18)");
+        revealG.addColorStop(0.4, "rgba(78,133,191,0.08)");
         revealG.addColorStop(1, "transparent");
         ctx.fillStyle = revealG;
         ctx.fillRect(0, 0, W, H);
@@ -198,19 +199,19 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
 
       /* ── FADING phase: just embers drifting ── */
       if (phase === "fading") {
-        if (frameRef.current % 8 === 0) spawnEmbers(cx, cy, 1);
+        if (frameRef.current % 10 === 0) spawnEmbers(cx, cy, 1);
       }
 
       /* ── Update & draw sparks ── */
       sparksRef.current = sparksRef.current.filter((s) => {
         // Physics
         s.trail.push({ x: s.x, y: s.y });
-        if (s.trail.length > 6) s.trail.shift();
+        if (s.trail.length > 9) s.trail.shift();
 
         s.x += s.vx;
         s.y += s.vy;
-        s.vy += 0.18; // gravity
-        s.vx *= 0.99;
+        s.vy += 0.08; // soft gravity
+        s.vx *= 0.985;
         s.life -= 1 / 60 / s.maxLife;
 
         if (s.life <= 0) return false;
@@ -228,9 +229,9 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
           ctx.lineTo(s.x, s.y);
           ctx.strokeStyle =
             s.bright > 0.7
-              ? `rgba(255,240,200,${alpha * 0.6})`
-              : `rgba(255,160,40,${alpha * 0.4})`;
-          ctx.lineWidth = s.size * 0.5 * s.life;
+              ? `rgba(235,247,255,${alpha * 0.55})`
+              : `rgba(137,170,204,${alpha * 0.35})`;
+          ctx.lineWidth = s.size * 0.4 * s.life;
           ctx.stroke();
           ctx.restore();
         }
@@ -240,19 +241,19 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
         ctx.globalAlpha = alpha;
 
         // Glow
-        ctx.shadowBlur = s.bright > 0.7 ? s.size * 14 : s.size * 8;
+        ctx.shadowBlur = s.bright > 0.7 ? s.size * 12 : s.size * 7;
         ctx.shadowColor =
-          s.bright > 0.7 ? "rgba(255,220,150,0.9)" : "rgba(255,120,20,0.7)";
+          s.bright > 0.7 ? "rgba(224,236,247,0.85)" : "rgba(78,133,191,0.65)";
 
         // Core
         ctx.beginPath();
         ctx.arc(s.x, s.y, s.size * s.life, 0, Math.PI * 2);
         ctx.fillStyle =
           s.bright > 0.85
-            ? "#fffaf0" // white-hot
+            ? "#f7fbff" // white-hot
             : s.bright > 0.5
-            ? "#ffd080" // bright orange
-            : "#ff8020"; // deep orange
+            ? "#b8d4ef" // bright blue
+            : "#4e85bf"; // deep blue
         ctx.fill();
 
         ctx.restore();
@@ -261,18 +262,18 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
 
       /* ── Update & draw embers ── */
       embersRef.current = embersRef.current.filter((e) => {
-        e.x += e.vx + Math.sin(frameRef.current * 0.02 + e.hue) * 0.3;
+        e.x += e.vx + Math.sin(frameRef.current * 0.018 + e.hue) * 0.16;
         e.y += e.vy;
-        e.life -= 0.003;
+        e.life -= 0.0024;
         if (e.life <= 0) return false;
 
         ctx.save();
         ctx.globalAlpha = e.life * e.life * 0.7;
         ctx.shadowBlur = e.size * 6;
-        ctx.shadowColor = `hsla(${e.hue}, 100%, 55%, 0.6)`;
+        ctx.shadowColor = `hsla(${e.hue}, 70%, 70%, 0.55)`;
         ctx.beginPath();
         ctx.arc(e.x, e.y, e.size * e.life, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${e.hue}, 100%, ${55 + e.life * 20}%, 1)`;
+        ctx.fillStyle = `hsla(${e.hue}, 70%, ${58 + e.life * 22}%, 1)`;
         ctx.fill();
         ctx.restore();
         return true;
@@ -314,11 +315,11 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
           }}
           initial={{ opacity: 0, scale: 0 }}
           animate={{
-            opacity: phase === "strike" ? [0, 1, 0.7] : [0.7, 0.5, 0.7],
-            scale: phase === "strike" ? [0, 1.5, 1] : [1, 1.1, 1],
+            opacity: phase === "strike" ? [0, 0.85, 0.55] : [0.55, 0.38, 0.55],
+            scale: phase === "strike" ? [0, 1.25, 0.95] : [0.95, 1.08, 0.95],
           }}
           transition={{
-            duration: phase === "strike" ? 0.5 : 1.5,
+            duration: phase === "strike" ? 0.65 : 1.8,
             repeat: phase === "shower" ? Infinity : 0,
             repeatType: "reverse",
           }}
@@ -326,8 +327,8 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
           <div
             className="w-6 h-6 rounded-full"
             style={{
-              background: "radial-gradient(circle, #fff 0%, #ffd080 30%, #ff8020 60%, transparent 100%)",
-              boxShadow: "0 0 40px 20px rgba(255,160,40,0.4), 0 0 80px 40px rgba(255,100,0,0.2)",
+              background: "radial-gradient(circle, #fff 0%, #e0ecf7 35%, #89aacc 65%, transparent 100%)",
+              boxShadow: "0 0 40px 18px rgba(184,212,239,0.32), 0 0 90px 42px rgba(78,133,191,0.18)",
             }}
           />
         </motion.div>
@@ -335,20 +336,28 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
 
       {/* Text — same layout structure as hero for pixel-perfect alignment */}
       <div className="absolute inset-0 z-30 flex flex-col items-center text-center px-4 max-w-5xl mx-auto h-full justify-center pointer-events-none">
-        {/* Invisible spacer matching hero "SPARKS NPO" label */}
-        <p className="text-xs uppercase tracking-[0.3em] mb-8 opacity-0 select-none" aria-hidden="true">
-          SPARKS NPO
-        </p>
+        <motion.div
+          className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-bg/40 px-4 py-2 backdrop-blur-md"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{
+            opacity: phase === "ignite" || phase === "fading" ? textGlow : 0,
+            y: phase === "ignite" || phase === "fading" ? 0 : 10,
+          }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <img src={sparksLogo} alt="Sparks logo" className="h-6 w-6 object-contain" />
+          <span className="text-xs text-muted uppercase tracking-[0.3em]">SPARKS NPO</span>
+        </motion.div>
 
         <motion.h1
           className="text-7xl md:text-[7rem] lg:text-[9rem] font-display italic tracking-tight text-text-primary leading-[0.9] mb-6"
           style={{
             opacity: textGlow,
-            filter: `blur(${(1 - textGlow) * 16}px)`,
+            filter: `blur(${(1 - textGlow) * 10}px)`,
             textShadow:
               textGlow > 0.2
-                ? `0 0 ${textGlow * 80}px rgba(255,180,60,${textGlow * 0.6}),
-                   0 0 ${textGlow * 160}px rgba(255,100,0,${textGlow * 0.25}),
+                ? `0 0 ${textGlow * 70}px rgba(184,212,239,${textGlow * 0.45}),
+                   0 0 ${textGlow * 150}px rgba(78,133,191,${textGlow * 0.22}),
                    0 2px 4px rgba(0,0,0,0.5)`
                 : "none",
           }}
@@ -364,7 +373,7 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
             opacity: phase === "ignite" || phase === "fading" ? 1 : 0,
             y: phase === "ignite" || phase === "fading" ? 0 : 10,
           }}
-          transition={{ duration: 0.8, delay: 0.2 }}
+          transition={{ duration: 0.9, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
         >
           Igniting a spark in your mind
         </motion.p>
@@ -389,7 +398,7 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
           initial={{ opacity: 0 }}
           animate={{
             opacity:
-              phase === "ignite" ? 0.15 : phase === "fading" ? 0.08 : 0.05,
+              phase === "ignite" ? 0.16 : phase === "fading" ? 0.08 : 0.06,
           }}
           transition={{ duration: 1 }}
         >
@@ -397,7 +406,7 @@ export const LoadingScreen: FC<LoadingScreenProps> = ({ onComplete }) => {
             className="absolute inset-0"
             style={{
               background:
-                "radial-gradient(ellipse 60% 50% at 50% 46%, rgba(255,140,40,0.25) 0%, transparent 70%)",
+                "radial-gradient(ellipse 60% 50% at 50% 46%, rgba(78,133,191,0.26) 0%, transparent 70%)",
             }}
           />
         </motion.div>

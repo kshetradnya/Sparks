@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { FC } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import sparksLogo from "../../image-removebg-preview.png";
 
 type Phase = "form" | "sealing" | "flying" | "arrived";
 
@@ -98,7 +99,7 @@ export const ContactForm: FC = () => {
                         style={{ background: `linear-gradient(135deg, ${C.accent}, ${C.light})` }}
                       >
                         <div className="w-7 h-7 rounded-full bg-bg/80 flex items-center justify-center">
-                          <span className="font-display italic text-[11px]">S</span>
+                          <img src={sparksLogo} alt="Sparks logo" className="h-5 w-5 object-contain" />
                         </div>
                       </div>
                       <div>

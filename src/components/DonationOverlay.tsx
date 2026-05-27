@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { FC, FormEvent } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Send } from "lucide-react";
+import sparksLogo from "../../image-removebg-preview.png";
 
 type Phase = "entering" | "form" | "sent" | "done";
 
@@ -85,7 +86,7 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
                     <div className="flex items-center gap-3 mb-6">
                       <div className="w-8 h-8 rounded-full accent-gradient flex items-center justify-center">
                         <div className="w-7 h-7 rounded-full bg-bg/80 flex items-center justify-center">
-                          <span className="font-display italic text-[11px]">S</span>
+                          <img src={sparksLogo} alt="Sparks logo" className="h-5 w-5 object-contain" />
                         </div>
                       </div>
                       <div>
