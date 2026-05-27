@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import type { FC } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Heart, Users, Lightbulb, Globe } from "lucide-react";
 
 interface MissionPageProps {
