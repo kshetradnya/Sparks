@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import type { FC } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, Heart, Users, Lightbulb, Globe } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, Heart, Users, Lightbulb } from "lucide-react";
 
 interface MissionPageProps {
   onClose: () => void;
@@ -11,22 +11,17 @@ const VALUES = [
   {
     icon: Heart,
     title: "Empathy First",
-    desc: "Every program starts by listening. We understand communities before we serve them — designing workshops around real needs, not assumptions.",
+    desc: "Every program starts by listening. We understand people before we build for them, so our work is shaped by real needs, not assumptions.",
   },
   {
     icon: Users,
-    title: "Inclusive by Design",
-    desc: "Age, background, experience — none of it matters. Whether you're 8 or 80, our programs meet you exactly where you are.",
+    title: "Tech for Good",
+    desc: "At a time when technology can be misused, we choose to use it for care, access, education, and the betterment of society.",
   },
   {
     icon: Lightbulb,
-    title: "Learning by Doing",
-    desc: "No lectures, no slides. We put tools in people's hands and let curiosity take over. The best learning happens when you build something real.",
-  },
-  {
-    icon: Globe,
-    title: "Community Driven",
-    desc: "We don't wait for people to come to us. We go to schools, senior homes, and community centers — bringing innovation to every doorstep.",
+    title: "Small Steps Matter",
+    desc: "We believe change does not need to begin with something huge. One workshop, one product, one student, and one community can still move the world forward.",
   },
 ];
 
@@ -36,7 +31,7 @@ const TIMELINE = [
   { year: "2025", event: "Vision Spectacles begins, building free smart spectacles for blind people." },
   { year: "2025", event: "AI for Good public sessions begin. 500+ lives impacted across all programs." },
   { year: "2025", event: "Presented at SPARKS x SRMD spiritual retreat to a wider audience." },
-  { year: "2026", event: "Expanding to new cities. Community STEM Day, AI Literacy for All, and Tech & Tea in the pipeline." },
+  { year: "2026", event: "Expanding to new cities. Community STEM Day, AI Literacy for All, and Vision Spectacles Pilot in the pipeline." },
 ];
 
 export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
@@ -99,7 +94,7 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
           </h1>
 
           <p className="text-xl md:text-2xl text-text-primary/70 max-w-3xl leading-relaxed font-light">
-            We bridge the technology gap and empower every generation to thrive in a digital world. From soldering irons to AI prompts — Sparks makes innovation accessible, hands-on, and human.
+            We use technology for education, health, accessibility, and social good. In a time when people fear how tech can be used in harmful ways, Sparks is working to prove that it can still be human, helpful, and hopeful.
           </p>
         </motion.div>
 
@@ -115,18 +110,18 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <div className="text-text-primary/80 text-lg leading-relaxed space-y-6">
               <p>
-                Sparks began with a simple observation: technology is advancing faster than most people can keep up. Kids are told to "learn to code" but never shown why it matters. Seniors are left behind in a digital-first world. And everyday people are overwhelmed by AI headlines with no guidance on what it means for their lives.
+                Sparks began with a simple observation: technology is advancing faster than most people can access it meaningfully. Kids are told to "learn to code" but never shown why it matters. People with disabilities are often priced out of practical assistive tools. Families hear about AI and new technology, but also worry about how these tools can be misused.
               </p>
               <p>
-                Founded by Nitya Jain — a Cambridge Checkpoint World Topper pursuing IBDP — Sparks was born out of a conviction that education shouldn't be passive. When a child builds a working fan from a motor and wires, they don't just learn physics — they discover they can create. When a grandparent sends their first voice message, they don't just learn tech — they feel less alone.
+                Founded by Nitya Jain — a Cambridge Checkpoint World Topper pursuing IBDP — Sparks was born out of a conviction that technology should make society better, not more divided or afraid. When a child builds a working fan, they discover they can create. When a blind user receives assistive technology, innovation becomes personal. When technology supports health and safety, it becomes care.
               </p>
             </div>
             <div className="text-text-primary/80 text-lg leading-relaxed space-y-6">
               <p>
-                Joined by co-founders Kshetradnya (an ML enthusiast pursuing HSC) and Aagam Jain (a creative force pursuing A Levels), the team grew from a weekend project into a movement. Three programs, 500+ lives touched, and a growing community of volunteers who believe that the best way to learn is by doing.
+                Our vision is to build a future where technology is used responsibly, compassionately, and practically. We are not trying to change the world in one dramatic leap. We are trying to take one small step at a time: one program, one idea, one useful product, one person helped.
               </p>
               <p>
-                Today, Sparks operates across schools, community centers, and senior homes in Mumbai — with plans to expand to new cities. We're not just teaching skills. We're building confidence, one spark at a time.
+                Today, Sparks operates across schools and community spaces in Mumbai — with plans to expand to new cities. We're not just teaching skills. We're building confidence, access, and trust in technology, one spark at a time.
               </p>
             </div>
           </div>

@@ -1,70 +1,33 @@
-import { useState, useEffect, useMemo, useRef } from "react";
-import type { FC } from "react";
+import { useEffect, useRef, useState } from "react";
+import type { FC, FormEvent } from "react";
 import { motion } from "framer-motion";
+import { ArrowLeft, Send } from "lucide-react";
 
-type Phase = "entering" | "form" | "dissolving" | "running" | "curtain" | "done";
+type Phase = "entering" | "form" | "sent" | "done";
 
 interface DonationOverlayProps {
   onClose: () => void;
 }
-
-interface MoneyParticle {
-  id: number;
-  x: number;
-  y: number;
-  tx: number;
-  ty: number;
-  size: number;
-  symbol: string;
-  color: string;
-  delay: number;
-  rotation: number;
-}
-
-const SYMBOLS = ["$", "€", "£", "¥"];
-const COLORS = ["#FFD700", "#32CD32", "#FFA500", "#00CED1"];
 
 export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
   const [phase, setPhase] = useState<Phase>("entering");
   const onCloseRef = useRef(onClose);
   useEffect(() => { onCloseRef.current = onClose; });
 
-  const particles = useMemo<MoneyParticle[]>(() => {
-    const arr: MoneyParticle[] = [];
-    for (let i = 0; i < 35; i++) {
-      arr.push({
-        id: i,
-        x: 15 + Math.random() * 70,
-        y: 10 + Math.random() * 60,
-        tx: 40 + Math.random() * 20,
-        ty: 70 + Math.random() * 10,
-        size: 18 + Math.random() * 28,
-        symbol: SYMBOLS[Math.floor(Math.random() * SYMBOLS.length)],
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        delay: Math.random() * 0.8,
-        rotation: Math.random() * 720 - 360,
-      });
-    }
-    return arr;
-  }, []);
-
-  // Phase transitions — onClose stored in ref to avoid dep-array churn
   useEffect(() => {
-    let t: ReturnType<typeof setTimeout>;
-    switch (phase) {
-      case "entering":  t = setTimeout(() => setPhase("form"), 700); break;
-      case "dissolving": t = setTimeout(() => setPhase("running"), 2600); break;
-      case "running":    t = setTimeout(() => setPhase("curtain"), 2200); break;
-      case "curtain":    t = setTimeout(() => setPhase("done"), 1800); break;
-      case "done":       t = setTimeout(() => onCloseRef.current(), 200); break;
-      default: return;
+    if (phase === "entering") {
+      const t = setTimeout(() => setPhase("form"), 500);
+      return () => clearTimeout(t);
     }
-    return () => clearTimeout(t);
+    if (phase === "done") {
+      const t = setTimeout(() => onCloseRef.current(), 200);
+      return () => clearTimeout(t);
+    }
   }, [phase]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    setPhase("dissolving");
+    setPhase("sent");
   };
 
   const inputCls =
@@ -72,7 +35,7 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
 
   return (
     <motion.div
-      className="fixed inset-0 z-[9998] bg-bg overflow-hidden"
+      className="fixed inset-0 z-[9998] bg-bg overflow-y-auto"
       initial={{ clipPath: "circle(0% at 50% 100%)" }}
       animate={{
         clipPath:
@@ -82,183 +45,159 @@ export const DonationOverlay: FC<DonationOverlayProps> = ({ onClose }) => {
       }}
       transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
     >
-      {/* === FORM === */}
-      {(phase === "entering" || phase === "form") && (
-        <motion.div
-          className="absolute inset-0 flex items-center justify-center px-4 overflow-y-auto"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-        >
-          <div className="w-full max-w-lg py-16">
+      <motion.div
+        className="min-h-screen flex items-center justify-center px-4 py-14"
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15, duration: 0.55 }}
+      >
+        {phase !== "sent" ? (
+          <div className="w-full max-w-3xl">
             <div className="text-center mb-10">
               <div className="flex items-center justify-center gap-4 mb-6">
                 <div className="w-8 h-px bg-stroke" />
-                <span className="text-xs text-muted uppercase tracking-[0.3em]">Support Us</span>
+                <span className="text-xs text-muted uppercase tracking-[0.3em]">Partner With Sparks</span>
                 <div className="w-8 h-px bg-stroke" />
               </div>
-              <h2 className="text-5xl md:text-7xl font-display italic tracking-tight mb-4">Donate.</h2>
-              <p className="text-muted text-sm max-w-xs mx-auto">
-                Every contribution fuels a spark of change in our communities.
+              <h2 className="text-5xl md:text-7xl font-display italic tracking-tight mb-4">
+                Send us your<br />
+                <span className="not-italic font-sans font-medium text-3xl md:text-5xl text-text-primary/80">idea.</span>
+              </h2>
+              <p className="text-muted text-sm max-w-md mx-auto">
+                Tell us about your program, collaboration, or project idea. We will read it like a letter from someone who wants to build something meaningful with us.
               </p>
             </div>
 
-            <form
-              onSubmit={handleSubmit}
-              className="bg-surface border border-stroke rounded-3xl p-8 md:p-10 space-y-5"
-            >
-              <div>
-                <label className="block text-xs text-muted uppercase tracking-widest mb-2">Amount</label>
-                <div className="grid grid-cols-4 gap-3">
-                  {["$10", "$25", "$50", "$100"].map((amt) => (
-                    <button key={amt} type="button"
-                      className="py-3 rounded-xl border border-stroke text-sm font-medium hover:bg-white hover:text-black transition-all">
-                      {amt}
+            <div className="relative mt-20">
+              <div
+                className="absolute left-2 right-2 z-0"
+                style={{
+                  top: "-70px",
+                  height: "72px",
+                  background: "linear-gradient(180deg, #1e1e38 0%, #16162c 100%)",
+                  clipPath: "polygon(0 100%, 50% 0%, 100% 100%)",
+                }}
+              />
+
+              <div className="relative bg-surface border border-stroke rounded-b-3xl overflow-hidden z-10">
+                <div className="m-3 md:m-5 rounded-2xl border border-stroke/20 bg-bg/60">
+                  <form onSubmit={handleSubmit} className="p-6 md:p-10 space-y-5">
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-full accent-gradient flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-bg/80 flex items-center justify-center">
+                          <span className="font-display italic text-[11px]">S</span>
+                        </div>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted uppercase tracking-[0.2em]">To</p>
+                        <p className="text-sm font-medium">Sparks Partnership Team</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Your Name</label>
+                        <input type="text" placeholder="Your full name" className={inputCls} required />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Email</label>
+                        <input type="email" placeholder="you@example.com" className={inputCls} required />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Phone / WhatsApp</label>
+                        <input type="tel" placeholder="Optional" className={inputCls} />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-muted uppercase tracking-widest mb-2">School / Organization</label>
+                        <input type="text" placeholder="Optional" className={inputCls} />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Idea / Program Name</label>
+                        <input type="text" placeholder="What should we call it?" className={inputCls} required />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-muted uppercase tracking-widest mb-2">Type</label>
+                        <select className={`${inputCls} appearance-none cursor-pointer`} required defaultValue="">
+                          <option value="" disabled>Select one...</option>
+                          <option>Workshop</option>
+                          <option>Product idea</option>
+                          <option>School collaboration</option>
+                          <option>Volunteer partnership</option>
+                          <option>Other</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs text-muted uppercase tracking-widest mb-2">Tell us about the idea</label>
+                      <textarea
+                        placeholder="What do you want to build, who will it help, and how can Sparks be involved?"
+                        rows={5}
+                        className={`${inputCls} resize-none`}
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs text-muted uppercase tracking-widest mb-2">What support do you need?</label>
+                      <textarea
+                        placeholder="Mentors, volunteers, venue, technical help, materials, outreach..."
+                        rows={3}
+                        className={`${inputCls} resize-none`}
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full group relative rounded-2xl text-sm px-7 py-4 mt-4 hover:scale-[1.02] transition-all duration-300 bg-text-primary text-bg font-medium overflow-hidden"
+                    >
+                      <span className="absolute inset-0 accent-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="absolute inset-[2px] bg-bg rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <span className="relative z-10 group-hover:text-text-primary transition-colors inline-flex items-center justify-center gap-2">
+                        Send Partnership Idea <Send className="w-4 h-4" />
+                      </span>
                     </button>
-                  ))}
+                  </form>
+                </div>
+
+                <div className="absolute bottom-0 left-3 right-3 md:left-5 md:right-5 h-10 overflow-hidden rounded-b-2xl pointer-events-none opacity-25">
+                  <div className="w-full h-full" style={{ clipPath: "polygon(0 0, 50% 100%, 100% 0)", background: "linear-gradient(180deg, #222 0%, transparent 100%)" }} />
                 </div>
               </div>
-              <div>
-                <label className="block text-xs text-muted uppercase tracking-widest mb-2">Your Name</label>
-                <input type="text" placeholder="Optional" className={inputCls} />
-              </div>
-              <div>
-                <label className="block text-xs text-muted uppercase tracking-widest mb-2">Message</label>
-                <textarea placeholder="Optional note" rows={2} className={`${inputCls} resize-none`} />
-              </div>
-              <button type="submit"
-                className="w-full group relative rounded-2xl text-sm px-7 py-4 mt-4 hover:scale-[1.02] transition-all duration-300 bg-text-primary text-bg font-medium overflow-hidden">
-                <span className="absolute inset-0 accent-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="absolute inset-[2px] bg-bg rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="relative z-10 group-hover:text-text-primary transition-colors">Submit Donation</span>
-              </button>
-            </form>
+            </div>
 
-            <button onClick={() => onCloseRef.current()}
-              className="mt-6 mx-auto block text-muted text-sm hover:text-text-primary transition-colors">
-              &larr; Back to site
+            <button
+              onClick={() => setPhase("done")}
+              className="mt-6 mx-auto flex items-center gap-2 text-muted text-sm hover:text-text-primary transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to site
             </button>
           </div>
-        </motion.div>
-      )}
-
-      {/* === DISSOLVING — money particles === */}
-      {phase === "dissolving" && (
-        <motion.div className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          {particles.map((p) => (
-            <motion.div
-              key={p.id}
-              className="absolute font-bold pointer-events-none select-none"
-              style={{ fontSize: p.size, color: p.color, left: `${p.x}%`, top: `${p.y}%` }}
-              initial={{ scale: 0, rotate: 0, opacity: 0 }}
-              animate={{
-                scale: [0, 1.4, 1],
-                rotate: p.rotation,
-                x: `${(p.tx - p.x) * 2}px`,
-                y: `${(p.ty - p.y) * 3}px`,
-                opacity: [0, 1, 1, 0.7],
-              }}
-              transition={{ duration: 2.2, delay: p.delay, ease: "easeInOut" }}
+        ) : (
+          <div className="text-center max-w-lg px-6">
+            <div className="w-16 h-16 mx-auto rounded-full accent-gradient flex items-center justify-center mb-8">
+              <Send className="w-7 h-7 text-bg" />
+            </div>
+            <h2 className="text-5xl md:text-7xl font-display italic tracking-tight mb-5">Received.</h2>
+            <p className="text-muted leading-relaxed mb-8">
+              Thanks for writing to Sparks. Your idea is on our desk, and our team will review how we can build or collaborate on it.
+            </p>
+            <button
+              onClick={() => setPhase("done")}
+              className="rounded-full border border-stroke px-7 py-3 text-sm font-medium hover:bg-white hover:text-black transition-all"
             >
-              {p.symbol}
-            </motion.div>
-          ))}
-          <motion.p
-            className="absolute bottom-1/4 left-1/2 -translate-x-1/2 text-muted text-sm uppercase tracking-widest whitespace-nowrap"
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}>
-            Processing your generosity...
-          </motion.p>
-        </motion.div>
-      )}
-
-      {/* === RUNNING — robot grabs money and runs === */}
-      {phase === "running" && (
-        <motion.div className="absolute inset-0 flex items-end justify-center overflow-hidden"
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <motion.p
-            className="absolute top-1/3 left-1/2 -translate-x-1/2 text-3xl md:text-5xl font-display italic text-text-primary"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: [0, 1, 1, 0], scale: [0.8, 1, 1, 0.9] }}
-            transition={{ duration: 2.2, times: [0, 0.2, 0.7, 1] }}>
-            Thank you!
-          </motion.p>
-
-          <motion.div className="mb-12"
-            initial={{ x: -200 }}
-            animate={{ x: [0, 0, 2200] }}
-            transition={{ duration: 2.2, times: [0, 0.3, 1], ease: "easeIn" }}>
-            <svg width="130" height="170" viewBox="0 0 130 170">
-              <rect x="35" y="8" width="52" height="40" rx="13" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-              <circle cx="50" cy="26" r="6.5" fill="#FFA500" />
-              <circle cx="72" cy="26" r="6.5" fill="#FFA500" />
-              <circle cx="50" cy="26" r="2.5" fill="#FFD700" />
-              <circle cx="72" cy="26" r="2.5" fill="#FFD700" />
-              <path d="M48 38 Q61 47 74 38" stroke="#FFA500" strokeWidth="2" fill="none" strokeLinecap="round" />
-              <line x1="61" y1="8" x2="61" y2="0" stroke="#555" strokeWidth="2" />
-              <circle cx="61" cy="0" r="3" fill="#FFA500" />
-              <rect x="54" y="48" width="14" height="8" rx="3" fill="#2a2a4e" />
-              <rect x="30" y="56" width="62" height="52" rx="9" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-              <circle cx="61" cy="80" r="8" fill="#b8d4ef" opacity="0.5" />
-              <circle cx="61" cy="80" r="3.5" fill="#e0ecf7" />
-              <motion.g animate={{ y: [0, -3, 0] }} transition={{ duration: 0.35, repeat: Infinity }}>
-                <circle cx="102" cy="48" r="22" fill="#FFD700" opacity="0.85" stroke="#DAA520" strokeWidth="2" />
-                <text x="102" y="55" textAnchor="middle" fill="#333" fontSize="18" fontWeight="bold">$</text>
-              </motion.g>
-              <path d="M92 66 L102 54 L102 40" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              <motion.g animate={{ rotate: [-25, 25, -25] }} transition={{ duration: 0.3, repeat: Infinity }} style={{ transformOrigin: "30px 66px" }}>
-                <path d="M30 66 L15 85 L8 100" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-              </motion.g>
-              <motion.g animate={{ rotate: [-22, 22, -22] }} transition={{ duration: 0.3, repeat: Infinity }} style={{ transformOrigin: "48px 108px" }}>
-                <path d="M48 108 L38 138 L28 158" stroke="#2a2a4e" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <rect x="18" y="155" width="20" height="8" rx="3" fill="#1a1a2e" />
-              </motion.g>
-              <motion.g animate={{ rotate: [22, -22, 22] }} transition={{ duration: 0.3, repeat: Infinity }} style={{ transformOrigin: "74px 108px" }}>
-                <path d="M74 108 L84 138 L94 158" stroke="#2a2a4e" strokeWidth="11" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <rect x="84" y="155" width="20" height="8" rx="3" fill="#1a1a2e" />
-              </motion.g>
-            </svg>
-          </motion.div>
-        </motion.div>
-      )}
-
-      {/* === CURTAIN — worker robot slides across === */}
-      {phase === "curtain" && (
-        <motion.div className="absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute inset-y-0 w-full bg-surface/95 backdrop-blur-sm flex items-center justify-center"
-            initial={{ x: "-100%" }} animate={{ x: "0%" }}
-            transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}>
-            <motion.div
-              className="absolute right-6 md:right-12 top-1/2 -translate-y-1/2"
-              animate={{ x: [40, 0] }} transition={{ duration: 1.4, ease: [0.4, 0, 0.2, 1] }}>
-              <svg width="90" height="130" viewBox="0 0 90 130">
-                <rect x="22" y="5" width="46" height="34" rx="12" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-                <circle cx="36" cy="20" r="6" fill="#b8d4ef" />
-                <circle cx="54" cy="20" r="6" fill="#b8d4ef" />
-                <circle cx="36" cy="20" r="2.5" fill="#e0ecf7" />
-                <circle cx="54" cy="20" r="2.5" fill="#e0ecf7" />
-                <path d="M20 12 L45 2 L70 12" stroke="#FFA500" strokeWidth="3" fill="none" strokeLinecap="round" />
-                <line x1="45" y1="5" x2="45" y2="0" stroke="#555" strokeWidth="2" />
-                <circle cx="45" cy="0" r="3" fill="#b8d4ef" />
-                <path d="M36 30 Q45 36 54 30" stroke="#b8d4ef" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-                <rect x="40" y="39" width="10" height="7" rx="3" fill="#2a2a4e" />
-                <rect x="18" y="46" width="54" height="42" rx="7" fill="#1a1a2e" stroke="#333" strokeWidth="1.5" />
-                <circle cx="45" cy="64" r="6" fill="#b8d4ef" opacity="0.4" />
-                <path d="M18 56 L5 64 L0 78" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M72 56 L85 64 L90 78" stroke="#2a2a4e" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M32 88 L28 108 L24 125" stroke="#2a2a4e" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <path d="M58 88 L62 108 L66 125" stroke="#2a2a4e" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-                <rect x="16" y="122" width="16" height="7" rx="3" fill="#1a1a2e" />
-                <rect x="58" y="122" width="16" height="7" rx="3" fill="#1a1a2e" />
-              </svg>
-            </motion.div>
-            <motion.p className="text-muted text-sm uppercase tracking-widest"
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }}>
-              Returning you home...
-            </motion.p>
-          </motion.div>
-        </motion.div>
-      )}
+              Return to site
+            </button>
+          </div>
+        )}
+      </motion.div>
     </motion.div>
   );
 };

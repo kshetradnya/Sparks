@@ -102,8 +102,8 @@ export const ContactForm: FC = () => {
                         </div>
                       </div>
                       <div>
-                        <p className="text-xs text-muted uppercase tracking-[0.2em]">From</p>
-                        <p className="text-sm font-medium">Sparks NPO</p>
+                        <p className="text-xs text-muted uppercase tracking-[0.2em]">To</p>
+                        <p className="text-sm font-medium">Sparks Team</p>
                       </div>
                     </div>
 

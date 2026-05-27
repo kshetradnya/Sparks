@@ -3,159 +3,127 @@ import { AnimatePresence } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hls from "hls.js";
-import { ArrowUpRight, Bell } from "lucide-react";
+import {
+  ArrowUpRight,
+  BrainCircuit,
+  Glasses,
+  HandHeart,
+  HeartPulse,
+  Lightbulb,
+  ShieldCheck,
+  UsersRound,
+  Wrench,
+} from "lucide-react";
 
 import { LoadingScreen } from "./components/LoadingScreen";
 import { ContactForm } from "./components/ContactForm";
 import { FooterRobot } from "./components/FooterRobot";
 import { DonationOverlay } from "./components/DonationOverlay";
-import { EventPage } from "./components/EventPage";
-import type { EventData } from "./components/EventPage";
 import { MissionPage } from "./components/MissionPage";
+import aagamImg from "../Aagam.png";
+import kshetraImg from "../Kshetra.png";
+import nityaImg from "../Nitya.png";
+import vivanImg from "../Vivan.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const roles = ["Educators", "Mentors", "Innovators", "Change-Makers"];
 
-const programs: EventData[] = [
-  {
-    id: "handheld-fan",
-    title: "TECH FOR KIDS",
-    tag: "STEM for Kids",
-    img: "https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=800",
-    desc: "Taught 200+ kids how to build their own handheld fans, sparking curiosity in engineering and hands-on creation.",
-    longDesc:
-      "The Handheld Fan Workshop is our flagship program — a hands-on STEM experience designed for children aged 6 to 14. Each child receives a kit containing a small DC motor, battery pack, wires, and fan blades. Guided step by step, they learn the basics of electrical circuits, motor mechanics, and simple engineering.\n\nWhat makes this workshop special is the moment a child's fan spins for the first time. That spark of wonder — the realization that they built something real — is exactly what Sparks is about. Over multiple sessions across schools and community centers, we've reached over 200 children, many of whom had never touched a circuit before.\n\nOur volunteers break down complex concepts into playful, age-appropriate lessons. By the end of each session, every child walks away with a working fan and a newfound confidence in their ability to create.",
-    highlights: [
-      "Hands-on circuit building with real components",
-      "Age-appropriate lessons for 6–14 year olds",
-      "Every child takes home a working handheld fan",
-      "Conducted across multiple schools and communities",
-      "Volunteer mentors guide each child individually",
-      "Presented at SPARKS x SRMD spiritual retreat",
-    ],
-    stats: [
-      { label: "Kids Taught", value: "200+" },
-      { label: "Sessions Held", value: "12" },
-      { label: "Schools Reached", value: "6" },
-    ],
-    date: "Ongoing — Monthly Sessions",
-    location: "Mumbai, India",
-    duration: "2 hours per session",
-    video: "sparks-retreat.mp4",
-  },
-  {
-    id: "vision-spectacles",
-    title: "Vision Spectacles",
-    tag: "Assistive Technology",
-    img: "https://images.pexels.com/photos/7551667/pexels-photo-7551667.jpeg?auto=compress&cs=tinysrgb&w=800",
-    desc: "Building smart spectacles for blind people and distributing them for free, making assistive technology more practical, personal, and accessible.",
-    longDesc:
-      "Vision Spectacles is our assistive technology project focused on building smart spectacles for blind people and giving them away for free. The goal is simple: create a practical product that helps someone move through daily life with more confidence, then make sure cost is not the reason they cannot use it.\n\nThe spectacles are designed as a wearable aid that can support awareness of nearby obstacles, objects, and surroundings through simple, accessible feedback. We are approaching the project as both an engineering challenge and a service commitment, combining product design, electronics, testing, and direct community distribution.\n\nWhat makes this project meaningful is that it does not stop at a prototype. We want the final device to reach real people who can use it, learn from it, and benefit from it without paying for it. Every improvement is shaped around comfort, reliability, dignity, and everyday usefulness.",
-    highlights: [
-      "Smart spectacles designed for blind users",
-      "Free distribution to people who need them",
-      "Wearable support for obstacle and surroundings awareness",
-      "Built through hands-on engineering and product design",
-      "Tested with a focus on comfort, reliability, and dignity",
-    ],
-    stats: [
-      { label: "Prototype Goal", value: "1" },
-      { label: "Cost to Users", value: "Free" },
-      { label: "Primary Users", value: "Blind People" },
-    ],
-    date: "In Development",
-    location: "Mumbai, India",
-    duration: "Product build and distribution",
-  },
-  {
-    id: "ai-for-good",
-    title: "AI for Good",
-    tag: "Public Awareness",
-    img: "https://images.pexels.com/photos/8386440/pexels-photo-8386440.jpeg?auto=compress&cs=tinysrgb&w=800",
-    desc: "Educated the general public on using AI responsibly and productively — empowering everyday people with tomorrow's tools.",
-    longDesc:
-      "AI for Good is our public-facing awareness program aimed at demystifying artificial intelligence for everyday people. In an era of rapid AI advancement, misinformation and fear can spread just as quickly as the technology itself. This program exists to change that.\n\nThrough interactive sessions, live demonstrations, and Q&A panels, we cover everything from how large language models work to the ethical considerations of AI in society. We make the complex simple without dumbing it down — respecting our audience's intelligence while meeting them where they are.\n\nWhether it's a college student wondering how AI will affect their career, a parent concerned about AI in education, or a professional looking to integrate AI into their workflow — AI for Good provides clear, honest, and empowering answers.",
-    highlights: [
-      "Interactive demos of AI tools and capabilities",
-      "Ethical AI discussions and responsible usage",
-      "Career guidance for an AI-driven future",
-      "Open to all ages and backgrounds",
-      "Live Q&A with tech-savvy volunteers",
-    ],
-    stats: [
-      { label: "Attendees", value: "300+" },
-      { label: "Events Held", value: "5" },
-      { label: "Topics Covered", value: "15+" },
-    ],
-    date: "Quarterly Events",
-    location: "Mumbai, India",
-    duration: "2.5 hours per event",
-  },
-];
-
 const founders = [
   {
     name: "Nitya Jain",
     role: "Founder",
-    desc: "Pursuing IBDP, Nitya is a Cambridge Checkpoint World Topper and one of only 70 students selected for HVBGA. Her academic excellence fuels her drive to make quality education accessible to all.",
-    img: "https://images.pexels.com/photos/3184611/pexels-photo-3184611.jpeg?auto=compress&cs=tinysrgb&w=400",
+    desc: "Curious, driven, and deeply focused on meaningful impact.\nAt Sparks, he leads the vision, partnerships, and mission behind every program.",
+    img: nityaImg,
   },
   {
-    name: "Kshetradnya",
-    role: "Co-Founder",
-    desc: "Pursuing HSC with a deep love for mathematics and machine learning. When not building ML models or solving equations, you'll find him gaming — bringing the same strategic thinking to both code and controllers.",
-    img: "https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg?auto=compress&cs=tinysrgb&w=400",
+    name: "Kshetradnya Patole",
+    role: "Chief Technology Officer",
+    desc: "A builder at heart with a strong interest in mathematics, machine learning, and systems.\nAt Sparks, he leads technical development and turns ideas into working prototypes.",
+    img: kshetraImg,
   },
   {
     name: "Aagam Jain",
-    role: "Co-Founder",
-    desc: "The creative force behind Sparks. Pursuing A Levels, Aagam brings artistry to everything — from playing guitar and composing melodies to crafting the creative vision of our programs.",
-    img: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=400",
+    role: "Chief Innovations Officer",
+    desc: "Creative, expressive, and always looking for fresh ways to make ideas feel alive.\nAt Sparks, he shapes innovation strategy, creative direction, and new program ideas.",
+    img: aagamImg,
+  },
+  {
+    name: "Vivan Kudale",
+    role: "Chief Operations Officer",
+    desc: "Practical, dependable, and strong at bringing people and plans together.\nAt Sparks, he manages operations, coordination, and on-ground execution.",
+    img: vivanImg,
   },
 ];
 
-const quickLookImages = [
-  { src: "https://images.pexels.com/photos/8613312/pexels-photo-8613312.jpeg?auto=compress&cs=tinysrgb&w=600", caption: "Kids building handheld fans" },
-  { src: "https://images.pexels.com/photos/8199562/pexels-photo-8199562.jpeg?auto=compress&cs=tinysrgb&w=600", caption: "AI workshop in action" },
-  { src: "https://images.pexels.com/photos/7551442/pexels-photo-7551442.jpeg?auto=compress&cs=tinysrgb&w=600", caption: "Seniors learning AI tools" },
-  { src: "https://images.pexels.com/photos/8386365/pexels-photo-8386365.jpeg?auto=compress&cs=tinysrgb&w=600", caption: "Public AI awareness session" },
-  { src: "https://images.pexels.com/photos/8613089/pexels-photo-8613089.jpeg?auto=compress&cs=tinysrgb&w=600", caption: "Young engineers at work" },
-  { src: "https://images.pexels.com/photos/5905709/pexels-photo-5905709.jpeg?auto=compress&cs=tinysrgb&w=600", caption: "Community workshop" },
+const quickLookCards = [
+  {
+    kicker: "01 / Learn",
+    title: "Young Makers Lab",
+    desc: "Hands-on STEM sessions where kids build simple real-world projects and discover that science is something they can touch, test, and create.",
+    points: ["Circuit kits and simple motors", "Guided build sessions", "Take-home working projects"],
+    Icon: Wrench,
+  },
+  {
+    kicker: "02 / Build",
+    title: "Vision Spectacles",
+    desc: "A coming-soon assistive technology project focused on smart spectacles for blind users, designed around everyday usefulness and free access.",
+    points: ["Obstacle-awareness support", "Comfort-first wearable design", "Free access for users"],
+    Icon: Glasses,
+  },
+  {
+    kicker: "03 / Explain",
+    title: "AI for Good",
+    desc: "A planned public awareness initiative that makes AI easier to understand, safer to use, and more useful for students, families, and communities.",
+    points: ["Responsible AI basics", "Practical everyday use cases", "Safety, ethics, and clarity"],
+    Icon: BrainCircuit,
+  },
+  {
+    kicker: "04 / Care",
+    title: "Tech for Health",
+    desc: "Exploring responsible, low-cost health technology that can support prevention, accessibility, early awareness, and everyday care.",
+    points: ["Practical health access tools", "Prevention and early-awareness ideas", "Human-centered safety design"],
+    Icon: HeartPulse,
+  },
+  {
+    kicker: "05 / Serve",
+    title: "Community First",
+    desc: "Every Sparks project starts with a real need, then turns student energy, design, and technology into something practical for people.",
+    points: ["Listen before building", "Partner with local groups", "Measure real usefulness"],
+    Icon: UsersRound,
+  },
 ];
 
-const futureEvents = [
+const philosophyCards = [
   {
-    title: "Community STEM Day",
-    date: "June 15, 2026",
-    desc: "A hands-on electronics and engineering workshop for kids aged 8-14. Build, break, and learn!",
-    tag: "Workshop",
+    title: "Our Vision",
+    desc: "A world where technology feels less frightening and more useful, humane, and accessible to everyone.",
+    icon: "01",
+    Icon: Lightbulb,
   },
   {
-    title: "AI Literacy for All",
-    date: "July 8, 2026",
-    desc: "Our monthly public session on using AI tools responsibly — from ChatGPT to image generators.",
-    tag: "Public Talk",
+    title: "Our Mission",
+    desc: "To use hands-on learning, assistive products, and responsible innovation for the betterment of society.",
+    icon: "02",
+    Icon: HandHeart,
   },
   {
-    title: "Tech & Tea",
-    date: "August 22, 2026",
-    desc: "A relaxed afternoon for seniors to brush up on AI skills, ask questions, and connect with peers.",
-    tag: "Seniors",
+    title: "Our Values",
+    desc: "Empathy, safety, access, and service guide what we build and who we build it for.",
+    icon: "03",
+    Icon: ShieldCheck,
   },
 ];
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [roleIndex, setRoleIndex] = useState(0);
-  const [showDonation, setShowDonation] = useState(false);
+  const [showPartnerForm, setShowPartnerForm] = useState(false);
   const [partnerHovered, setPartnerHovered] = useState(false);
-  const [activeEvent, setActiveEvent] = useState<EventData | null>(null);
   const [showMission, setShowMission] = useState(false);
 
   const handleComplete = useCallback(() => setIsLoading(false), []);
-  const handleDonationClose = useCallback(() => setShowDonation(false), []);
-  const handleEventClose = useCallback(() => setActiveEvent(null), []);
+  const handlePartnerFormClose = useCallback(() => setShowPartnerForm(false), []);
   const handleMissionClose = useCallback(() => setShowMission(false), []);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -269,16 +237,6 @@ export default function App() {
         });
       }
 
-      // Future events
-      document.querySelectorAll(".event-card").forEach((card, i) => {
-        gsap.fromTo(card,
-          { opacity: 0, y: 40 },
-          { opacity: 1, y: 0, duration: 0.8, delay: i * 0.15, ease: "power3.out",
-            scrollTrigger: { trigger: card, start: "top 95%", toggleActions: "play none none none" },
-          }
-        );
-      });
-
       // Contact section
       document.querySelectorAll(".contact-reveal").forEach((el, i) => {
         gsap.fromTo(el,
@@ -302,14 +260,9 @@ export default function App() {
         {showMission && <MissionPage onClose={handleMissionClose} />}
       </AnimatePresence>
 
-      {/* Event Detail Overlay */}
+      {/* Partner idea overlay */}
       <AnimatePresence>
-        {activeEvent && <EventPage event={activeEvent} onClose={handleEventClose} />}
-      </AnimatePresence>
-
-      {/* Donation Overlay */}
-      <AnimatePresence>
-        {showDonation && <DonationOverlay onClose={handleDonationClose} />}
+        {showPartnerForm && <DonationOverlay onClose={handlePartnerFormClose} />}
       </AnimatePresence>
 
       {/* NAVBAR */}
@@ -325,10 +278,9 @@ export default function App() {
             <div className="w-px h-5 bg-stroke mx-1 hidden md:block" />
             <div className="hidden md:flex items-center gap-10">
               {[
-                { name: "Programs", id: "programs" },
-                { name: "Quick Look", id: "quicklook" },
+                { name: "Philosophy", id: "philosophy" },
+                { name: "Snapshot", id: "quicklook" },
                 { name: "About", id: "about" },
-                { name: "Events", id: "events" },
                 { name: "Contact", id: "contact" },
               ].map((item) => (
                 <button key={item.name} onClick={() => document.getElementById(item.id)?.scrollIntoView({ behavior: "smooth" })}
@@ -341,12 +293,12 @@ export default function App() {
               </button>
             </div>
             <div className="w-px h-5 bg-stroke mx-1" />
-            <button onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
+            <button onClick={() => setShowPartnerForm(true)}
               className="group relative flex items-center text-xs sm:text-sm px-3 sm:px-4 py-1.5 sm:py-2 rounded-full overflow-hidden">
               <span className="absolute inset-[-2px] accent-gradient opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10" />
               <span className="absolute inset-0 bg-surface rounded-full backdrop-blur-md -z-10" />
               <span className="text-text-primary flex items-center gap-1 relative z-10">
-                Donate <ArrowUpRight className="w-3 h-3" />
+                Partner <ArrowUpRight className="w-3 h-3" />
               </span>
             </button>
           </div>
@@ -359,6 +311,20 @@ export default function App() {
           <video ref={videoRef} className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2" autoPlay muted loop playsInline />
           <div className="absolute inset-0 bg-black/40" />
           <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-bg to-transparent" />
+        </div>
+        <div className="pointer-events-none absolute inset-0 z-[1] opacity-70">
+          <div className="visual-node visual-float absolute left-[8%] top-[28%] hidden md:flex">
+            <Wrench className="w-4 h-4" />
+            <span>Build</span>
+          </div>
+          <div className="visual-node visual-float-delayed absolute right-[10%] top-[34%] hidden md:flex">
+            <BrainCircuit className="w-4 h-4" />
+            <span>Explain</span>
+          </div>
+          <div className="visual-node visual-float-slow absolute left-[14%] bottom-[22%] hidden lg:flex">
+            <HeartPulse className="w-4 h-4" />
+            <span>Care</span>
+          </div>
         </div>
 
         <div className="relative z-10 flex flex-col items-center text-center px-4 max-w-5xl mx-auto h-full justify-center">
@@ -376,11 +342,11 @@ export default function App() {
             Igniting curiosity and empowering communities through hands-on STEM workshops and AI literacy programs. 500+ lives impacted and counting.
           </p>
           <div className="blur-in flex flex-col sm:flex-row gap-4">
-            <button onClick={() => document.getElementById("programs")?.scrollIntoView({ behavior: "smooth" })}
+            <button onClick={() => document.getElementById("philosophy")?.scrollIntoView({ behavior: "smooth" })}
               className="group relative rounded-full text-sm px-7 py-3.5 hover:scale-105 transition-all duration-300 bg-text-primary text-bg hover:text-text-primary overflow-hidden">
               <span className="absolute inset-0 accent-gradient opacity-0 group-hover:opacity-100 transition-opacity" />
               <span className="absolute inset-[2px] bg-bg rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-              <span className="relative z-10 font-medium">Our Programs</span>
+              <span className="relative z-10 font-medium">Our Philosophy</span>
             </button>
             <button onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
               className="group relative rounded-full text-sm px-7 py-3.5 hover:scale-105 transition-all duration-300 border-2 border-stroke bg-bg text-text-primary hover:border-transparent overflow-hidden">
@@ -399,98 +365,39 @@ export default function App() {
         </div>
       </section>
 
-      {/* PROGRAMS */}
-      <section id="programs" className="bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50">
-        <div className="max-w-[1200px] mx-auto px-6 md:px-12">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-            <div className="max-w-2xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-8 h-px bg-stroke" />
-                <span className="text-xs text-muted uppercase tracking-[0.3em]">What We Do</span>
-              </div>
-              <h2 className="text-5xl md:text-7xl font-display italic tracking-tight">Our<br />Programs.</h2>
-            </div>
-            <p className="text-muted max-w-sm text-sm leading-relaxed">
-              Three focused initiatives, each designed to make technology accessible and empowering for every generation.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {programs.map((prog, i) => (
-              <div
-                key={i}
-                className="group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500 cursor-pointer"
-                onClick={() => setActiveEvent(prog)}
-              >
-                <div className="aspect-[4/5] overflow-hidden relative">
-                  <img src={prog.img} alt={prog.title} className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700" />
-                  <div className="absolute top-6 left-6">
-                    <span className="bg-bg/80 backdrop-blur-md px-4 py-2 rounded-full text-[10px] uppercase tracking-widest border border-stroke">{prog.tag}</span>
-                  </div>
-                </div>
-                <div className="p-8">
-                  <h3 className="text-xl font-display italic mb-2">{prog.title}</h3>
-                  <p className="text-muted text-sm leading-relaxed mb-6">{prog.desc}</p>
-                  <div className="w-10 h-10 rounded-full border border-stroke flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    <ArrowUpRight className="w-4 h-4" />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* QUICK LOOK — Horizontal Scroll Gallery */}
-      <section id="quicklook" ref={quickLookRef} className="relative z-20 h-screen overflow-hidden border-t border-stroke/50">
-        <div className="quick-look-track flex items-center h-full gap-8 px-12 will-change-transform">
-          <div className="flex-shrink-0 w-[380px] md:w-[480px] h-full flex flex-col justify-center pr-8">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="w-8 h-px bg-stroke" />
-              <span className="text-xs text-muted uppercase tracking-[0.3em]">Gallery</span>
-            </div>
-            <h2 className="text-5xl md:text-7xl font-display italic tracking-tight mb-6">Quick<br />Look.</h2>
-            <p className="text-muted text-sm max-w-xs">
-              Moments captured from our programs — real impact, real smiles, real change.
-            </p>
-          </div>
-          {quickLookImages.map((item, i) => (
-            <div key={i} className="flex-shrink-0 w-[320px] md:w-[420px] h-[65vh] rounded-3xl overflow-hidden relative group">
-              <img src={item.src} alt={item.caption} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-8 left-8 right-8">
-                <p className="text-white text-lg font-medium">{item.caption}</p>
-                <div className="w-12 h-[2px] accent-gradient mt-3 rounded-full" />
-              </div>
-            </div>
-          ))}
-          <div className="flex-shrink-0 w-[80px]" />
-        </div>
-      </section>
-
-      {/* MISSION */}
-      <section id="mission" className="mission-section bg-bg py-24 md:py-48 relative z-20 border-t border-stroke/50 overflow-hidden">
+      {/* PHILOSOPHY */}
+      <section id="philosophy" className="mission-section bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50 overflow-hidden">
         <div className="mission-bg-text absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none">
           <h2 className="text-[20vw] font-display italic leading-none whitespace-nowrap">SPARKS</h2>
         </div>
         <div className="max-w-[1200px] mx-auto px-6 md:px-10 relative z-10">
-          <div className="text-center mb-24 md:mb-32">
+          <div className="text-center mb-20 md:mb-24">
             <div className="flex items-center justify-center gap-4 mb-8">
-              <div className="w-8 h-px bg-stroke" /><span className="text-xs text-muted uppercase tracking-[0.3em]">Our Mission</span><div className="w-8 h-px bg-stroke" />
+              <div className="w-8 h-px bg-stroke" /><span className="text-xs text-muted uppercase tracking-[0.3em]">Philosophy</span><div className="w-8 h-px bg-stroke" />
             </div>
             <h2 className="mission-reveal text-4xl md:text-6xl lg:text-7xl tracking-tight leading-[1.1] max-w-4xl mx-auto group">
-              To ignite{" "}
+              Using tech for{" "}
               <span className="font-display italic text-text-primary group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#b8d4ef] group-hover:to-[#e0ecf7] transition-all duration-500">curiosity</span>
-              , bridge the technology gap, and empower every generation to thrive in a digital world.
+              , care, and the betterment of society — one small step at a time.
             </h2>
+            <p className="mission-reveal text-muted text-sm md:text-base leading-relaxed max-w-2xl mx-auto mt-8">
+              In a time when many people fear how technology can be misused, Sparks chooses a different path: building and teaching technology that helps communities, improves access, and makes the world a little better.
+            </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 perspective-[1000px]">
-            {[
-              { title: "Hands-On Learning", desc: "We believe in learning by doing. Every workshop puts tools in people's hands — from soldering irons to AI prompts.", icon: "01" },
-              { title: "Every Generation", desc: "From kids building their first circuits to seniors navigating AI — we design programs for every age and background.", icon: "02" },
-              { title: "Community First", desc: "We go where we're needed. Our programs are community-driven, shaped by the people we serve.", icon: "03" },
-            ].map((pillar, i) => (
+            {philosophyCards.map((pillar, i) => (
               <div key={i} onClick={() => setShowMission(true)} className="mission-reveal mission-card group relative bg-surface/50 border border-stroke p-10 rounded-[2.5rem] hover:bg-surface transition-colors duration-500 transform-gpu overflow-hidden cursor-pointer">
                 <div className="absolute top-0 right-0 p-8 text-6xl opacity-10 font-display italic select-none text-stroke">{pillar.icon}</div>
+                <div className="relative mb-8 h-24 overflow-hidden rounded-2xl border border-stroke bg-bg/50">
+                  <div className="absolute inset-0 tech-grid opacity-40" />
+                  <div className="signal-sweep absolute inset-y-0 left-0 w-16" />
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 h-12 w-12 rounded-2xl border border-[#b8d4ef]/30 bg-[#b8d4ef]/10 flex items-center justify-center text-[#b8d4ef]">
+                    <pillar.Icon className="h-5 w-5" />
+                  </div>
+                  <div className="absolute right-5 top-6 h-2 w-2 rounded-full bg-[#b8d4ef] visual-pulse" />
+                  <div className="absolute right-12 bottom-7 h-1.5 w-1.5 rounded-full bg-white/50" />
+                  <div className="absolute right-20 top-11 h-1 w-1 rounded-full bg-white/30" />
+                </div>
                 <h3 className="text-2xl font-display italic mb-4 group-hover:translate-x-2 transition-transform">{pillar.title}</h3>
                 <p className="text-muted leading-relaxed group-hover:text-text-primary/80 transition-colors">{pillar.desc}</p>
                 <div className="mt-8 w-12 h-12 rounded-full border border-stroke flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
@@ -503,68 +410,64 @@ export default function App() {
         </div>
       </section>
 
-      {/* STATS */}
-      <section className="bg-bg py-16 md:py-32 relative z-20 border-t border-stroke/50">
-        <div className="max-w-[1000px] mx-auto px-6 md:px-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-6 text-center divide-y md:divide-y-0 md:divide-x divide-stroke">
-            {[
-              { val: "3", label: "Programs" },
-              { val: "500+", label: "Lives Impacted" },
-              { val: "200+", label: "Kids Taught" },
-            ].map((s, i) => (
-              <div key={i} className="flex flex-col items-center justify-center pt-8 md:pt-0">
-                <h4 className="text-5xl md:text-7xl font-display text-text-primary mb-2">{s.val}</h4>
-                <p className="text-sm text-muted uppercase tracking-widest">{s.label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FUTURE EVENTS */}
-      <section id="events" className="bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50">
-        <div className="max-w-[1200px] mx-auto px-6 md:px-10">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
-            <div>
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-8 h-px bg-stroke" /><span className="text-xs text-muted uppercase tracking-[0.3em]">Upcoming</span>
-              </div>
-              <h2 className="text-5xl md:text-7xl font-display italic tracking-tight">Future<br />Events.</h2>
+      {/* SNAPSHOT — Horizontal Scroll Concepts */}
+      <section id="quicklook" ref={quickLookRef} className="relative z-20 h-screen overflow-hidden border-t border-stroke/50">
+        <div className="quick-look-track flex items-center h-full gap-8 px-12 will-change-transform">
+          <div className="flex-shrink-0 w-[380px] md:w-[480px] h-full flex flex-col justify-center pr-8">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-8 h-px bg-stroke" />
+              <span className="text-xs text-muted uppercase tracking-[0.3em]">Snapshot</span>
             </div>
-            <button
-              onClick={() => document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" })}
-              className="group flex items-center gap-3 rounded-full border border-stroke px-8 py-4 text-sm font-medium hover:bg-white hover:text-black transition-all"
-            >
-              <Bell className="w-4 h-4" />
-              <span>Get Notified</span>
-            </button>
+            <h2 className="text-5xl md:text-7xl font-display italic tracking-tight mb-6">What We're<br />Building.</h2>
+            <p className="text-muted text-sm max-w-xs">
+              Until we have real photos from every program, this space shows the ideas, products, and community work Sparks is focused on.
+            </p>
           </div>
-
-          <div className="events-grid grid grid-cols-1 md:grid-cols-3 gap-6">
-            {futureEvents.map((ev, i) => (
-              <div key={i} className="event-card group bg-surface border border-stroke rounded-3xl p-8 hover:border-text-primary/30 transition-all duration-500 relative overflow-hidden">
-                <div className="absolute top-0 right-0 p-6 text-6xl opacity-[0.04] font-display italic select-none">
-                  {String(i + 1).padStart(2, "0")}
-                </div>
-                <span className="inline-block bg-bg/80 border border-stroke px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest mb-6">
-                  {ev.tag}
-                </span>
-                <h3 className="text-2xl font-display italic mb-3 group-hover:translate-x-1 transition-transform">{ev.title}</h3>
-                <p className="text-muted text-sm leading-relaxed mb-6">{ev.desc}</p>
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted uppercase tracking-widest">{ev.date}</span>
-                  <div className="w-10 h-10 rounded-full border border-stroke flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all">
-                    <Bell className="w-4 h-4" />
-                  </div>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/[0.02] to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+          {quickLookCards.map((item, i) => (
+            <div key={i} className="flex-shrink-0 w-[320px] md:w-[420px] h-[65vh] rounded-3xl overflow-hidden relative group bg-surface border border-stroke p-7 md:p-8 flex flex-col justify-between hover:border-text-primary/30 transition-all duration-500">
+              <div className="absolute inset-0 opacity-[0.04] pointer-events-none">
+                <div className="absolute -top-20 -right-24 text-[14rem] font-display italic leading-none">{String(i + 1).padStart(2, "0")}</div>
               </div>
-            ))}
-          </div>
+              <div>
+                <span className="inline-block bg-bg/80 border border-stroke px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest mb-10">
+                  {item.kicker}
+                </span>
+                <div className="relative mb-7 h-24 overflow-hidden rounded-2xl border border-stroke bg-bg/60">
+                  <div className="absolute inset-0 tech-grid opacity-50" />
+                  <div className="absolute inset-x-8 top-1/2 h-px bg-gradient-to-r from-transparent via-[#b8d4ef]/50 to-transparent" />
+                  <div className="absolute left-8 top-1/2 -translate-y-1/2 h-14 w-14 rounded-2xl bg-[#b8d4ef]/10 border border-[#b8d4ef]/30 flex items-center justify-center text-[#b8d4ef] visual-float-slow">
+                    <item.Icon className="h-6 w-6" />
+                  </div>
+                  <div className="absolute right-8 top-1/2 -translate-y-1/2 h-9 w-9 rounded-full border border-white/15 flex items-center justify-center">
+                    <span className="h-2 w-2 rounded-full bg-[#b8d4ef] visual-pulse" />
+                  </div>
+                  <div className="signal-sweep absolute inset-y-0 left-0 w-20" />
+                </div>
+                <h3 className="text-3xl md:text-4xl font-display italic tracking-tight mb-4">{item.title}</h3>
+                <p className="text-muted text-sm leading-relaxed">{item.desc}</p>
+                <ul className="mt-6 space-y-2.5">
+                  {item.points.map((point) => (
+                    <li key={point} className="flex items-start gap-3 text-sm leading-relaxed text-text-primary/75">
+                      <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#b8d4ef]" />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="space-y-4">
+                <div className="h-px w-full bg-stroke" />
+                <div className="flex items-center justify-between text-xs uppercase tracking-[0.25em] text-muted">
+                  <span>Sparks</span>
+                  <span>{String(i + 1).padStart(2, "0")}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div className="flex-shrink-0 w-[80px]" />
         </div>
       </section>
 
-      {/* ABOUT / FOUNDERS — moved below Future Events */}
+      {/* ABOUT / FOUNDERS */}
       <section id="about" className="bg-bg py-24 md:py-32 relative z-20 border-t border-stroke/50 overflow-hidden">
         <div className="max-w-[1200px] mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row gap-16 md:gap-24 mb-24 md:mb-32">
@@ -576,7 +479,7 @@ export default function App() {
             </div>
             <div className="w-full md:w-1/2 about-bio-container pt-8 md:pt-16">
               <p className="text-2xl md:text-3xl leading-relaxed font-light text-text-primary mb-8">
-                {"Sparks is a student-led NPO built on a simple belief: technology should empower everyone. From teaching kids to solder circuits to helping grandparents chat with AI — we bring innovation to every doorstep.".split(" ").map((word, i) => (
+                {"Sparks is a student-led NPO built on a simple belief: technology should empower everyone. From teaching kids to solder circuits to building free assistive spectacles for blind users — we bring innovation to every doorstep.".split(" ").map((word, i) => (
                   <span key={i} className="bio-word inline-block mr-[0.3em]">{word}</span>
                 ))}
               </p>
@@ -596,7 +499,7 @@ export default function App() {
           </div>
 
           {/* Founders Grid */}
-          <div className="founders-grid grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="founders-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {founders.map((f, i) => (
               <div key={i} className="founder-card group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500">
                 <div className="aspect-square overflow-hidden relative">
@@ -608,7 +511,7 @@ export default function App() {
                 </div>
                 <div className="p-8">
                   <h3 className="text-2xl font-display italic mb-3">{f.name}</h3>
-                  <p className="text-muted text-sm leading-relaxed">{f.desc}</p>
+                  <p className="text-muted text-sm leading-relaxed whitespace-pre-line">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -626,11 +529,11 @@ export default function App() {
               <div className="w-8 h-px bg-stroke" />
             </div>
             <h2 className="contact-reveal text-5xl md:text-7xl font-display italic tracking-tight mb-6">
-              Drop us a<br />
-              <span className="not-italic font-sans font-medium text-3xl md:text-5xl text-text-primary/80">letter.</span>
+              Write to<br />
+              <span className="not-italic font-sans font-medium text-3xl md:text-5xl text-text-primary/80">Sparks.</span>
             </h2>
             <p className="contact-reveal text-muted text-sm max-w-md mx-auto">
-              Whether you want to volunteer, learn more, or just say hi — we'd love to hear from you.
+              Tell us how you'd like to help, collaborate, or learn more — your message comes straight to our team.
             </p>
           </div>
           <div className="contact-reveal">
@@ -656,16 +559,16 @@ export default function App() {
           <div className="mb-10">
             <FooterRobot
               isPartnerHovered={partnerHovered}
-              onClick={() => setShowDonation(true)}
+              onClick={() => setShowPartnerForm(true)}
             />
           </div>
 
           <div className="flex flex-col items-center text-center px-4">
             <h2 className="text-4xl md:text-6xl tracking-tight mb-8">
-              Want to support <br />our <span className="font-display italic">mission?</span>
+              Have an idea <br />for <span className="font-display italic">Sparks?</span>
             </h2>
             <button
-              onClick={() => setShowDonation(true)}
+              onClick={() => setShowPartnerForm(true)}
               onMouseEnter={() => setPartnerHovered(true)}
               onMouseLeave={() => setPartnerHovered(false)}
               className="group relative inline-flex items-center gap-3 rounded-full bg-white text-black px-8 py-4 text-lg font-medium hover:scale-105 transition-transform cursor-pointer"
