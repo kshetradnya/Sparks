@@ -25,14 +25,6 @@ const VALUES = [
   },
 ];
 
-const TIMELINE = [
-  { year: "2024", event: "Sparks founded by Nitya Jain with a vision to make STEM accessible to every generation." },
-  { year: "2024", event: "First Handheld Fan Workshop — 30 kids build their own fans from scratch." },
-  { year: "2025", event: "Vision Spectacles begins, building free smart spectacles for blind people." },
-  { year: "2025", event: "AI for Good public sessions begin. 500+ lives impacted across all programs." },
-  { year: "2025", event: "Presented at SPARKS x SRMD spiritual retreat to a wider audience." },
-  { year: "2026", event: "Expanding to new cities. Community STEM Day, AI Literacy for All, and Vision Spectacles Pilot in the pipeline." },
-];
 
 export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
   useEffect(() => {
@@ -161,45 +153,6 @@ export const MissionPage: FC<MissionPageProps> = ({ onClose }) => {
                 </motion.div>
               );
             })}
-          </div>
-        </motion.div>
-
-        {/* ═══ TIMELINE ═══ */}
-        <motion.div
-          className="mb-24 md:mb-32"
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 0.7 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-display italic mb-12">Our journey so far.</h2>
-
-          <div className="relative">
-            {/* Vertical line */}
-            <div className="absolute left-4 md:left-8 top-0 bottom-0 w-px bg-stroke" />
-
-            <div className="space-y-8">
-              {TIMELINE.map((item, i) => (
-                <motion.div
-                  key={i}
-                  className="flex gap-6 md:gap-10 items-start relative"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.9 + i * 0.1, duration: 0.4 }}
-                >
-                  {/* Dot on timeline */}
-                  <div className="relative z-10 flex-shrink-0">
-                    <div className="w-8 md:w-16 flex justify-center">
-                      <div className="w-3 h-3 rounded-full bg-[#b8d4ef] border-2 border-bg" />
-                    </div>
-                  </div>
-
-                  <div className="pb-2">
-                    <span className="text-xs text-[#b8d4ef] uppercase tracking-widest font-medium">{item.year}</span>
-                    <p className="text-text-primary/80 mt-1 leading-relaxed">{item.event}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
           </div>
         </motion.div>
 

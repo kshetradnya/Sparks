@@ -16,12 +16,12 @@ export const FooterRobot: FC<FooterRobotProps> = ({ isPartnerHovered, onClick })
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height * 0.42;
+      const cy = rect.top + rect.height * 0.4;
       const dx = e.clientX - cx;
       const dy = e.clientY - cy;
       const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-      const maxOff = 6;
-      const scale = Math.min(maxOff / dist, 0.04);
+      const maxOff = 5;
+      const scale = Math.min(maxOff / dist, 0.035);
       setPupil({ x: dx * scale, y: dy * scale });
     };
     window.addEventListener("mousemove", onMove);
@@ -29,261 +29,299 @@ export const FooterRobot: FC<FooterRobotProps> = ({ isPartnerHovered, onClick })
   }, []);
 
   const happy = isPartnerHovered;
-  const glow = happy ? "#FFA500" : "#b8d4ef";
-  const glowInner = happy ? "#FFD700" : "#e0ecf7";
+  const accent = happy ? "#FFA500" : "#b8d4ef";
+  const accentBright = happy ? "#FFD700" : "#e0ecf7";
 
   return (
     <div ref={containerRef} className="relative cursor-pointer select-none" onClick={onClick}>
       <motion.svg
-        viewBox="0 0 340 380"
-        className="w-full max-w-[300px] mx-auto"
-        style={{ filter: "drop-shadow(0 20px 60px rgba(0,0,0,0.5))" }}
+        viewBox="0 0 400 440"
+        className="w-full max-w-[320px] mx-auto"
+        style={{ filter: "drop-shadow(0 25px 70px rgba(0,0,0,0.6))" }}
         initial={{ y: 40, opacity: 0 }}
         whileInView={{ y: 0, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, ease: "easeOut" }}
       >
         <defs>
-          <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor={glow} stopOpacity="0.4" />
-            <stop offset="100%" stopColor={glow} stopOpacity="0" />
+          <linearGradient id="fr-cranium" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1a1a2e" />
+            <stop offset="50%" stopColor="#0f0f20" />
+            <stop offset="100%" stopColor="#0a0a18" />
+          </linearGradient>
+          <linearGradient id="fr-face" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#141428" />
+            <stop offset="100%" stopColor="#0c0c1e" />
+          </linearGradient>
+          <linearGradient id="fr-visor" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={accent} stopOpacity="0" />
+            <stop offset="50%" stopColor={accent} stopOpacity="0.6" />
+            <stop offset="100%" stopColor={accent} stopOpacity="0" />
+          </linearGradient>
+          <radialGradient id="fr-eyeGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor={accent} stopOpacity="0.5" />
+            <stop offset="60%" stopColor={accent} stopOpacity="0.1" />
+            <stop offset="100%" stopColor={accent} stopOpacity="0" />
           </radialGradient>
-          <linearGradient id="craniumG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#252545" />
-            <stop offset="100%" stopColor="#15152a" />
-          </linearGradient>
-          <linearGradient id="faceG" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1a1a32" />
-            <stop offset="100%" stopColor="#111128" />
-          </linearGradient>
+          <filter id="fr-glow">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+          <clipPath id="fr-visorClip">
+            <rect x="90" y="152" width="220" height="12" rx="6" />
+          </clipPath>
         </defs>
 
-        {/* ═══ NECK / BASE ═══ */}
-        <rect x="135" y="330" width="70" height="50" rx="8" fill="#0e0e20" stroke="#2a2a4e" strokeWidth="1" />
-        {/* Neck cables */}
-        <line x1="152" y1="332" x2="152" y2="355" stroke="#333" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="170" y1="332" x2="170" y2="358" stroke="#333" strokeWidth="2.5" strokeLinecap="round" />
-        <line x1="188" y1="332" x2="188" y2="355" stroke="#333" strokeWidth="2.5" strokeLinecap="round" />
-        {/* Neck ring */}
-        <ellipse cx="170" cy="330" rx="46" ry="8" fill="#1a1a32" stroke="#333" strokeWidth="1.5" />
+        {/* ═══ NECK ASSEMBLY ═══ */}
+        <rect x="155" y="370" width="90" height="70" rx="6" fill="#08081a" stroke="#1a1a3a" strokeWidth="1" />
+        {/* Hydraulic lines */}
+        <line x1="170" y1="372" x2="170" y2="400" stroke="#1a1a3a" strokeWidth="3" strokeLinecap="round" />
+        <line x1="200" y1="372" x2="200" y2="405" stroke="#1a1a3a" strokeWidth="3" strokeLinecap="round" />
+        <line x1="230" y1="372" x2="230" y2="400" stroke="#1a1a3a" strokeWidth="3" strokeLinecap="round" />
+        {/* Flex segments */}
+        {[376, 382, 388, 394].map((y) => (
+          <line key={y} x1="158" y1={y} x2="242" y2={y} stroke="#111130" strokeWidth="0.5" />
+        ))}
+        {/* Collar ring */}
+        <ellipse cx="200" cy="370" rx="55" ry="10" fill="#0f0f24" stroke="#1a1a3a" strokeWidth="1.5" />
+        <motion.ellipse cx="200" cy="370" rx="55" ry="10" fill="none" stroke={accent} strokeWidth="0.5"
+          animate={{ opacity: [0.1, 0.3, 0.1] }} transition={{ duration: 3, repeat: Infinity }} />
 
-        {/* ═══ CRANIUM SHELL ═══ */}
+        {/* ═══ CRANIUM ═══ */}
         <path
-          d="M62 200 C62 90, 170 40, 170 40 C170 40, 278 90, 278 200
-             L278 260 C278 300, 240 330, 170 330 C100 330, 62 300, 62 260 Z"
-          fill="url(#craniumG)"
-          stroke="#333"
-          strokeWidth="1.5"
+          d="M70 220 C70 95, 200 45, 200 45 C200 45, 330 95, 330 220
+             L330 285 C330 335, 280 370, 200 370 C120 370, 70 335, 70 285 Z"
+          fill="url(#fr-cranium)"
+          stroke="#1a1a3a"
+          strokeWidth="1.2"
         />
+        {/* Surface panels */}
+        <path d="M200 47 L200 130" stroke="#1a1a3a" strokeWidth="0.8" opacity="0.4" />
+        <path d="M130 85 Q165 70, 200 67" stroke="#1a1a3a" strokeWidth="0.6" opacity="0.3" fill="none" />
+        <path d="M270 85 Q235 70, 200 67" stroke="#1a1a3a" strokeWidth="0.6" opacity="0.3" fill="none" />
+        {/* Hex panel lines */}
+        <path d="M85 180 L85 250 L100 295" stroke="#1a1a3a" strokeWidth="0.6" opacity="0.25" fill="none" />
+        <path d="M315 180 L315 250 L300 295" stroke="#1a1a3a" strokeWidth="0.6" opacity="0.25" fill="none" />
+        <path d="M120 120 L280 120" stroke="#1a1a3a" strokeWidth="0.4" opacity="0.2" />
 
-        {/* Cranium panel lines */}
-        <path d="M170 42 L170 120" stroke="#2a2a4e" strokeWidth="1" opacity="0.5" />
-        <path d="M110 80 C110 80, 140 65, 170 62" stroke="#2a2a4e" strokeWidth="0.8" opacity="0.4" fill="none" />
-        <path d="M230 80 C230 80, 200 65, 170 62" stroke="#2a2a4e" strokeWidth="0.8" opacity="0.4" fill="none" />
-        {/* Side seams */}
-        <path d="M80 160 C80 160, 82 220, 90 270" stroke="#2a2a4e" strokeWidth="0.8" opacity="0.4" fill="none" />
-        <path d="M260 160 C260 160, 258 220, 250 270" stroke="#2a2a4e" strokeWidth="0.8" opacity="0.4" fill="none" />
-
-        {/* ═══ FOREHEAD VISOR ═══ */}
-        <path
-          d="M100 130 L240 130 L240 140 L100 140 Z"
-          fill="#0d0d1a"
-          stroke="#333"
-          strokeWidth="0.8"
-          rx="3"
-        />
-        {/* Visor LED strip */}
-        <motion.rect
-          x="105" y="132" width="130" height="6" rx="3"
-          fill={glow}
-          opacity={0.15}
-          animate={{ opacity: happy ? [0.15, 0.4, 0.15] : [0.08, 0.2, 0.08] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        {/* Visor segment lines */}
-        {[130, 150, 170, 190, 210].map((x) => (
-          <line key={x} x1={x} y1="131" x2={x} y2="139" stroke="#222" strokeWidth="0.5" />
+        {/* ═══ VISOR STRIP ═══ */}
+        <rect x="90" y="152" width="220" height="12" rx="6" fill="#06061a" stroke="#1a1a3a" strokeWidth="0.8" />
+        {/* Scanning light */}
+        <g clipPath="url(#fr-visorClip)">
+          <motion.rect
+            x="90" y="152" width="80" height="12" rx="6"
+            fill="url(#fr-visor)"
+            animate={{ x: [60, 260, 60] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </g>
+        {/* Visor tick marks */}
+        {[110, 135, 160, 185, 200, 215, 240, 265, 290].map((x) => (
+          <line key={x} x1={x} y1="153" x2={x} y2="163" stroke="#0f0f24" strokeWidth="0.4" />
         ))}
 
         {/* ═══ FACE PLATE ═══ */}
         <path
-          d="M88 145 L252 145 L262 200 L268 240 C268 280, 230 315, 170 315 C110 315, 72 280, 72 240 L78 200 Z"
-          fill="url(#faceG)"
-          stroke="#333"
-          strokeWidth="1"
+          d="M95 170 L305 170 L318 225 L325 265 C325 315, 275 355, 200 355 C125 355, 75 315, 75 265 L82 225 Z"
+          fill="url(#fr-face)"
+          stroke="#1a1a3a"
+          strokeWidth="0.8"
         />
 
-        {/* ═══ EAR MODULES ═══ */}
-        {/* Left ear */}
-        <rect x="52" y="160" width="18" height="70" rx="6" fill="#1a1a32" stroke="#333" strokeWidth="1" />
-        <rect x="55" y="168" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <rect x="55" y="176" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <rect x="55" y="184" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <motion.circle cx="61" cy="198" r="2.5" fill={glow} animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 2, repeat: Infinity }} />
-        <rect x="55" y="206" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <rect x="55" y="214" width="12" height="4" rx="1" fill="#0d0d1a" />
-        {/* Right ear */}
-        <rect x="270" y="160" width="18" height="70" rx="6" fill="#1a1a32" stroke="#333" strokeWidth="1" />
-        <rect x="273" y="168" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <rect x="273" y="176" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <rect x="273" y="184" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <motion.circle cx="279" cy="198" r="2.5" fill={glow} animate={{ opacity: [0.3, 0.8, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 }} />
-        <rect x="273" y="206" width="12" height="4" rx="1" fill="#0d0d1a" />
-        <rect x="273" y="214" width="12" height="4" rx="1" fill="#0d0d1a" />
+        {/* ═══ SIDE MODULES ═══ */}
+        {/* Left */}
+        <rect x="52" y="185" width="22" height="80" rx="4" fill="#0c0c1e" stroke="#1a1a3a" strokeWidth="1" />
+        {[193, 201, 209, 217, 225, 233, 241, 249].map((y) => (
+          <line key={`l${y}`} x1="56" y1={y} x2="70" y2={y} stroke="#111130" strokeWidth="0.8" />
+        ))}
+        <motion.rect x="58" y="255" width="12" height="3" rx="1" fill={accent}
+          animate={{ opacity: [0.2, 0.7, 0.2] }} transition={{ duration: 2, repeat: Infinity }} />
+        {/* Right */}
+        <rect x="326" y="185" width="22" height="80" rx="4" fill="#0c0c1e" stroke="#1a1a3a" strokeWidth="1" />
+        {[193, 201, 209, 217, 225, 233, 241, 249].map((y) => (
+          <line key={`r${y}`} x1="330" y1={y} x2="344" y2={y} stroke="#111130" strokeWidth="0.8" />
+        ))}
+        <motion.rect x="330" y="255" width="12" height="3" rx="1" fill={accent}
+          animate={{ opacity: [0.2, 0.7, 0.2] }} transition={{ duration: 2, repeat: Infinity, delay: 0.7 }} />
 
-        {/* ═══ BROW RIDGE ═══ */}
-        <path d="M100 160 L155 155 L170 157 L185 155 L240 160" stroke="#2a2a4e" strokeWidth="3" strokeLinecap="round" fill="none" />
+        {/* ═══ BROW ═══ */}
+        <path d="M110 185 L170 180 L200 182 L230 180 L290 185" stroke="#1a1a3a" strokeWidth="2.5" strokeLinecap="round" fill="none" />
 
         {/* ═══ EYES ═══ */}
-        {/* Eye glow auras */}
-        <circle cx="130" cy="195" r="30" fill="url(#eyeGlow)" />
-        <circle cx="210" cy="195" r="30" fill="url(#eyeGlow)" />
+        {[{ ex: 155 }, { ex: 245 }].map(({ ex }, idx) => (
+          <g key={idx}>
+            {/* Glow aura */}
+            <circle cx={ex} cy="218" r="35" fill="url(#fr-eyeGlow)" />
+            {/* Outer housing */}
+            <circle cx={ex} cy="218" r="28" fill="#060618" stroke="#1a1a3a" strokeWidth="1.5" />
+            {/* Precision ring */}
+            <motion.circle cx={ex} cy="218" r="24" fill="none" stroke={accent} strokeWidth="0.8"
+              strokeDasharray="4 4"
+              animate={{ opacity: [0.2, 0.5, 0.2], rotate: [0, 360] }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: `${ex}px 218px` }}
+            />
+            {/* Iris ring */}
+            <motion.circle cx={ex} cy="218" r="19" fill="none" stroke={accent} strokeWidth="2"
+              animate={{ opacity: happy ? [0.5, 1, 0.5] : [0.25, 0.5, 0.25] }}
+              transition={{ duration: 2, repeat: Infinity }} />
+            {/* Dark iris */}
+            <circle cx={ex} cy="218" r="16" fill="#060618" />
+            {/* Segmented iris detail */}
+            {[0, 60, 120, 180, 240, 300].map((deg) => {
+              const rad = (deg * Math.PI) / 180;
+              const r1 = 12, r2 = 16;
+              return (
+                <line key={deg}
+                  x1={ex + Math.cos(rad) * r1} y1={218 + Math.sin(rad) * r1}
+                  x2={ex + Math.cos(rad) * r2} y2={218 + Math.sin(rad) * r2}
+                  stroke={accent} strokeWidth="0.4" opacity="0.3" />
+              );
+            })}
+            {/* Pupil */}
+            <motion.circle
+              cx={ex + pupil.x} cy={218 + pupil.y} r="10"
+              fill={accent}
+              animate={{ fill: accent }}
+              transition={{ duration: 0.3 }}
+            />
+            <motion.circle
+              cx={ex + pupil.x} cy={218 + pupil.y} r="6"
+              fill={accentBright}
+              animate={{ fill: accentBright }}
+              transition={{ duration: 0.3 }}
+            />
+            {/* Reflections */}
+            <circle cx={ex + pupil.x + 3} cy={218 + pupil.y - 4} r="2.5" fill="white" opacity="0.65" />
+            <circle cx={ex + pupil.x - 2} cy={218 + pupil.y + 2} r="1.2" fill="white" opacity="0.3" />
+            {/* Scan line */}
+            <motion.line
+              x1={ex - 16} y1={218} x2={ex + 16} y2={218}
+              stroke={accent} strokeWidth="0.5"
+              animate={{ opacity: [0, 0.4, 0], y1: [204, 232, 204], y2: [204, 232, 204] }}
+              transition={{ duration: 3, repeat: Infinity, delay: idx * 0.5 }}
+            />
+          </g>
+        ))}
 
-        {/* Left eye assembly */}
-        {/* Outer socket ring */}
-        <circle cx="130" cy="195" r="26" fill="#0a0a18" stroke="#333" strokeWidth="1.5" />
-        {/* Inner mechanical ring */}
-        <motion.circle cx="130" cy="195" r="22" fill="none" stroke={glow} strokeWidth="1"
-          animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2.5, repeat: Infinity }} />
-        {/* Iris ring */}
-        <motion.circle cx="130" cy="195" r="17" fill="none" stroke={glow} strokeWidth="2.5" opacity="0.5"
-          animate={{ opacity: happy ? [0.5, 0.9, 0.5] : [0.3, 0.5, 0.3], stroke: glow }}
-          transition={{ duration: 1.8, repeat: Infinity }} />
-        {/* Iris fill */}
-        <circle cx="130" cy="195" r="14" fill="#0d0d1a" />
-        {/* Pupil — tracks cursor */}
-        <motion.circle
-          cx={130 + pupil.x} cy={195 + pupil.y} r="9"
-          fill={glow}
-          animate={{ fill: glow }}
-          transition={{ duration: 0.3 }}
-        />
-        <motion.circle
-          cx={130 + pupil.x} cy={195 + pupil.y} r="5"
-          fill={glowInner}
-          animate={{ fill: glowInner }}
-          transition={{ duration: 0.3 }}
-        />
-        {/* Reflection highlights */}
-        <circle cx={130 + pupil.x + 3} cy={195 + pupil.y - 4} r="2.5" fill="white" opacity="0.6" />
-        <circle cx={130 + pupil.x - 2} cy={195 + pupil.y + 2} r="1.2" fill="white" opacity="0.3" />
-        {/* Iris detail arcs */}
-        <path d="M118 183 A14 14 0 0 1 130 181" stroke={glow} strokeWidth="0.5" fill="none" opacity="0.4" />
-        <path d="M142 183 A14 14 0 0 0 130 181" stroke={glow} strokeWidth="0.5" fill="none" opacity="0.4" />
-
-        {/* Right eye assembly */}
-        <circle cx="210" cy="195" r="26" fill="#0a0a18" stroke="#333" strokeWidth="1.5" />
-        <motion.circle cx="210" cy="195" r="22" fill="none" stroke={glow} strokeWidth="1"
-          animate={{ opacity: [0.3, 0.6, 0.3] }} transition={{ duration: 2.5, repeat: Infinity, delay: 0.3 }} />
-        <motion.circle cx="210" cy="195" r="17" fill="none" stroke={glow} strokeWidth="2.5" opacity="0.5"
-          animate={{ opacity: happy ? [0.5, 0.9, 0.5] : [0.3, 0.5, 0.3], stroke: glow }}
-          transition={{ duration: 1.8, repeat: Infinity, delay: 0.2 }} />
-        <circle cx="210" cy="195" r="14" fill="#0d0d1a" />
-        <motion.circle
-          cx={210 + pupil.x} cy={195 + pupil.y} r="9"
-          fill={glow}
-          animate={{ fill: glow }}
-          transition={{ duration: 0.3 }}
-        />
-        <motion.circle
-          cx={210 + pupil.x} cy={195 + pupil.y} r="5"
-          fill={glowInner}
-          animate={{ fill: glowInner }}
-          transition={{ duration: 0.3 }}
-        />
-        <circle cx={210 + pupil.x + 3} cy={195 + pupil.y - 4} r="2.5" fill="white" opacity="0.6" />
-        <circle cx={210 + pupil.x - 2} cy={195 + pupil.y + 2} r="1.2" fill="white" opacity="0.3" />
-        <path d="M198 183 A14 14 0 0 1 210 181" stroke={glow} strokeWidth="0.5" fill="none" opacity="0.4" />
-        <path d="M222 183 A14 14 0 0 0 210 181" stroke={glow} strokeWidth="0.5" fill="none" opacity="0.4" />
-
-        {/* ═══ NOSE BRIDGE ═══ */}
-        <path d="M160 190 L170 225 L180 190" stroke="#2a2a4e" strokeWidth="1.5" fill="none" strokeLinejoin="round" />
-        <circle cx="170" cy="218" r="2" fill="#0d0d1a" stroke="#333" strokeWidth="0.5" />
+        {/* ═══ NOSE SENSOR ═══ */}
+        <path d="M190 215 L200 248 L210 215" stroke="#1a1a3a" strokeWidth="1.2" fill="none" strokeLinejoin="round" />
+        <motion.circle cx="200" cy="242" r="2.5" fill={accent}
+          animate={{ opacity: [0.15, 0.4, 0.15] }}
+          transition={{ duration: 3, repeat: Infinity }} />
 
         {/* ═══ CHEEK PANELS ═══ */}
-        <rect x="88" y="225" width="28" height="14" rx="4" fill="#0d0d1a" stroke="#333" strokeWidth="0.5" />
-        <motion.circle cx="96" cy="232" r="2" fill={glow} animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 3, repeat: Infinity }} />
-        <motion.circle cx="108" cy="232" r="2" fill={glow} animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 3, repeat: Infinity, delay: 0.5 }} />
-
-        <rect x="224" y="225" width="28" height="14" rx="4" fill="#0d0d1a" stroke="#333" strokeWidth="0.5" />
-        <motion.circle cx="232" cy="232" r="2" fill={glow} animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 3, repeat: Infinity, delay: 1 }} />
-        <motion.circle cx="244" cy="232" r="2" fill={glow} animate={{ opacity: [0.2, 0.5, 0.2] }} transition={{ duration: 3, repeat: Infinity, delay: 1.5 }} />
-
-        {/* Happy cheek blush */}
+        <path d="M95 255 L130 250 L130 270 L95 275 Z" fill="#08081a" stroke="#1a1a3a" strokeWidth="0.5" />
+        <path d="M305 255 L270 250 L270 270 L305 275 Z" fill="#08081a" stroke="#1a1a3a" strokeWidth="0.5" />
+        {/* Cheek LEDs */}
+        {[102, 114].map((x) => (
+          <motion.circle key={`cl${x}`} cx={x} cy="262" r="1.5" fill={accent}
+            animate={{ opacity: [0.1, 0.4, 0.1] }} transition={{ duration: 2.5, repeat: Infinity }} />
+        ))}
+        {[298, 286].map((x) => (
+          <motion.circle key={`cr${x}`} cx={x} cy="262" r="1.5" fill={accent}
+            animate={{ opacity: [0.1, 0.4, 0.1] }} transition={{ duration: 2.5, repeat: Infinity, delay: 0.8 }} />
+        ))}
+        {/* Happy blush */}
         {happy && (
           <>
-            <motion.ellipse cx="102" cy="235" rx="14" ry="8" fill="#FF6B00" initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} />
-            <motion.ellipse cx="238" cy="235" rx="14" ry="8" fill="#FF6B00" initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} />
+            <motion.ellipse cx="112" cy="262" rx="16" ry="8" fill="#FF6B00" initial={{ opacity: 0 }} animate={{ opacity: 0.08 }} />
+            <motion.ellipse cx="288" cy="262" rx="16" ry="8" fill="#FF6B00" initial={{ opacity: 0 }} animate={{ opacity: 0.08 }} />
           </>
         )}
 
         {/* ═══ MOUTH ═══ */}
-        <rect x="120" y="262" width="100" height="32" rx="8" fill="#0a0a18" stroke="#333" strokeWidth="1" />
+        <rect x="140" y="285" width="120" height="36" rx="6" fill="#060618" stroke="#1a1a3a" strokeWidth="1" />
         {happy ? (
-          /* Happy smile — curved LED bar */
           <motion.path
-            d="M132 275 Q150 290, 170 290 Q190 290, 208 275"
+            d="M155 300 Q175 318, 200 318 Q225 318, 245 300"
             stroke="#FFA500"
-            strokeWidth="3"
+            strokeWidth="2.5"
             fill="none"
             strokeLinecap="round"
+            filter="url(#fr-glow)"
             initial={{ pathLength: 0 }}
             animate={{ pathLength: 1 }}
             transition={{ duration: 0.5 }}
           />
         ) : (
-          /* Neutral — horizontal grille lines */
-          <g opacity="0.35">
-            {[270, 275, 280, 285].map((y) => (
-              <line key={y} x1="128" y1={y} x2="212" y2={y} stroke="#555" strokeWidth="1.5" strokeLinecap="round" />
+          <g>
+            {/* Equalizer bars */}
+            {[155, 165, 175, 185, 195, 205, 215, 225, 235, 245].map((x, i) => (
+              <motion.rect key={x}
+                x={x - 2} y={298} width="3" rx="1"
+                fill={accent} opacity="0.25"
+                animate={{ height: [4, 8 + Math.sin(i * 0.7) * 6, 4], y: [300, 296 - Math.sin(i * 0.7) * 3, 300] }}
+                transition={{ duration: 1.5 + i * 0.1, repeat: Infinity, ease: "easeInOut" }}
+              />
             ))}
           </g>
         )}
 
-        {/* ═══ CHIN DETAIL ═══ */}
-        <path d="M130 298 L170 310 L210 298" stroke="#2a2a4e" strokeWidth="1" fill="none" opacity="0.4" />
-        {/* Chin rivets */}
-        <circle cx="140" cy="302" r="2" fill="#1a1a2e" stroke="#333" strokeWidth="0.5" />
-        <circle cx="170" cy="308" r="2" fill="#1a1a2e" stroke="#333" strokeWidth="0.5" />
-        <circle cx="200" cy="302" r="2" fill="#1a1a2e" stroke="#333" strokeWidth="0.5" />
+        {/* ═══ CHIN ═══ */}
+        <path d="M145 330 L200 345 L255 330" stroke="#1a1a3a" strokeWidth="0.8" fill="none" opacity="0.3" />
+        {/* Ventilation slits */}
+        {[165, 185, 200, 215, 235].map((x) => (
+          <line key={x} x1={x} y1="338" x2={x} y2="348" stroke="#111130" strokeWidth="0.6" opacity="0.4" />
+        ))}
 
         {/* ═══ ANTENNA ARRAY ═══ */}
-        {/* Main antenna mast */}
-        <line x1="170" y1="42" x2="170" y2="14" stroke="#444" strokeWidth="3" strokeLinecap="round" />
-        <line x1="170" y1="14" x2="170" y2="4" stroke="#555" strokeWidth="2" strokeLinecap="round" />
+        {/* Main mast */}
+        <line x1="200" y1="47" x2="200" y2="15" stroke="#1a1a3a" strokeWidth="2.5" strokeLinecap="round" />
+        <line x1="200" y1="15" x2="200" y2="5" stroke="#2a2a50" strokeWidth="1.5" strokeLinecap="round" />
         <motion.circle
-          cx="170" cy="3" r="5"
-          fill={glow}
-          animate={{ opacity: [0.4, 1, 0.4] }}
+          cx="200" cy="4" r="5"
+          fill={accent}
+          filter="url(#fr-glow)"
+          animate={{ opacity: [0.4, 1, 0.4], r: [4, 5.5, 4] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         />
         {/* Side antennas */}
-        <line x1="148" y1="65" x2="138" y2="38" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="137" cy="36" r="2.5" fill="#333" stroke={glow} strokeWidth="0.8" />
-        <line x1="192" y1="65" x2="202" y2="38" stroke="#444" strokeWidth="1.5" strokeLinecap="round" />
-        <circle cx="203" cy="36" r="2.5" fill="#333" stroke={glow} strokeWidth="0.8" />
+        <line x1="175" y1="72" x2="162" y2="42" stroke="#1a1a3a" strokeWidth="1.5" strokeLinecap="round" />
+        <motion.circle cx="161" cy="40" r="3" fill="#111130" stroke={accent} strokeWidth="0.8"
+          animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 2, repeat: Infinity }} />
+        <line x1="225" y1="72" x2="238" y2="42" stroke="#1a1a3a" strokeWidth="1.5" strokeLinecap="round" />
+        <motion.circle cx="239" cy="40" r="3" fill="#111130" stroke={accent} strokeWidth="0.8"
+          animate={{ opacity: [0.3, 0.7, 0.3] }} transition={{ duration: 2, repeat: Infinity, delay: 0.5 }} />
 
-        {/* ═══ SURFACE RIVETS ═══ */}
+        {/* ═══ SURFACE DETAILS ═══ */}
+        {/* Hex bolt pattern */}
         {[
-          [95, 150], [245, 150],
-          [82, 200], [258, 200],
-          [90, 260], [250, 260],
-          [110, 310], [230, 310],
-        ].map(([cx, cy], i) => (
-          <circle key={`r${i}`} cx={cx} cy={cy} r="2" fill="#15152a" stroke="#2a2a4e" strokeWidth="0.8" />
+          [105, 175], [295, 175],
+          [88, 225], [312, 225],
+          [95, 285], [305, 285],
+          [120, 340], [280, 340],
+        ].map(([bx, by], i) => (
+          <g key={`bolt${i}`}>
+            <circle cx={bx} cy={by} r="3" fill="#0c0c1e" stroke="#1a1a3a" strokeWidth="0.6" />
+            <line x1={bx! - 1.5} y1={by} x2={bx! + 1.5} y2={by} stroke="#1a1a3a" strokeWidth="0.4" />
+          </g>
         ))}
 
-        {/* ═══ FOREHEAD STATUS LEDS ═══ */}
-        {[140, 155, 170, 185, 200].map((x, i) => (
+        {/* ═══ FOREHEAD HUD ═══ */}
+        {[160, 175, 190, 200, 210, 225, 240].map((x, i) => (
           <motion.circle
-            key={`led${i}`}
-            cx={x} cy="120"
-            r="2"
-            fill={glow}
-            animate={{ opacity: [0.15, 0.5, 0.15] }}
-            transition={{ duration: 1.5, repeat: Infinity, delay: i * 0.2 }}
+            key={`hud${i}`}
+            cx={x} cy="142"
+            r="1.5"
+            fill={accent}
+            animate={{ opacity: [0.1, 0.5, 0.1] }}
+            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.15 }}
           />
         ))}
+
+        {/* Data stream decoration */}
+        <motion.text x="95" y="148" fontSize="5" fill={accent} fontFamily="monospace" opacity="0.15"
+          animate={{ opacity: [0.05, 0.2, 0.05] }} transition={{ duration: 4, repeat: Infinity }}>
+          SYS::ONLINE
+        </motion.text>
+        <motion.text x="265" y="148" fontSize="5" fill={accent} fontFamily="monospace" opacity="0.15"
+          animate={{ opacity: [0.05, 0.2, 0.05] }} transition={{ duration: 4, repeat: Infinity, delay: 2 }}>
+          v4.2.1
+        </motion.text>
       </motion.svg>
     </div>
   );
