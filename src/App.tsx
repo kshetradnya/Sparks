@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Hls from "hls.js";
@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   UsersRound,
   Wrench,
+  X,
 } from "lucide-react";
 
 import { LoadingScreen } from "./components/LoadingScreen";
@@ -20,6 +21,7 @@ import { ContactForm } from "./components/ContactForm";
 import { FooterRobot } from "./components/FooterRobot";
 import { DonationOverlay } from "./components/DonationOverlay";
 import { MissionPage } from "./components/MissionPage";
+import { MusicToggle } from "./components/MusicToggle";
 import aagamImg from "../Aagam.png";
 import kshetraImg from "../Kshetra.png";
 import nityaImg from "../Nitya.png";
@@ -122,6 +124,7 @@ export default function App() {
   const [showPartnerForm, setShowPartnerForm] = useState(false);
   const [partnerHovered, setPartnerHovered] = useState(false);
   const [showMission, setShowMission] = useState(false);
+  const [expandedCard, setExpandedCard] = useState<number | null>(null);
 
   const handleComplete = useCallback(() => setIsLoading(false), []);
   const handlePartnerFormClose = useCallback(() => setShowPartnerForm(false), []);
@@ -256,6 +259,9 @@ export default function App() {
     <div className="bg-bg min-h-screen text-text-primary selection:bg-text-primary selection:text-bg overflow-x-hidden">
       {isLoading && <LoadingScreen onComplete={handleComplete} />}
 
+      {/* Music toggle */}
+      {!isLoading && <MusicToggle />}
+
       {/* Mission Page Overlay */}
       <AnimatePresence>
         {showMission && <MissionPage onClose={handleMissionClose} />}
@@ -264,6 +270,67 @@ export default function App() {
       {/* Partner idea overlay */}
       <AnimatePresence>
         {showPartnerForm && <DonationOverlay onClose={handlePartnerFormClose} />}
+      </AnimatePresence>
+
+      {/* Fullscreen snapshot card */}
+      <AnimatePresence>
+        {expandedCard !== null && (
+          <motion.div
+            className="fixed inset-0 z-[9998] bg-black/80 backdrop-blur-md flex items-center justify-center p-6"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setExpandedCard(null)}
+          >
+            <motion.div
+              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-surface border border-stroke p-10 md:p-14"
+              initial={{ scale: 0.85, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.85, opacity: 0 }}
+              transition={{ type: "spring", damping: 25 }}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setExpandedCard(null)}
+                className="absolute top-6 right-6 w-10 h-10 rounded-full bg-bg border border-stroke flex items-center justify-center hover:bg-white hover:text-black transition-all"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              {(() => {
+                const card = quickLookCards[expandedCard];
+                return (
+                  <>
+                    <span className="inline-block bg-bg/80 border border-stroke px-4 py-1.5 rounded-full text-[10px] uppercase tracking-widest mb-8">
+                      {card.kicker}
+                    </span>
+                    <div className="relative mb-8 h-32 overflow-hidden rounded-2xl border border-stroke bg-bg/60">
+                      <div className="absolute inset-0 tech-grid opacity-50" />
+                      <div className="absolute inset-x-8 top-1/2 h-px bg-gradient-to-r from-transparent via-[#b8d4ef]/50 to-transparent" />
+                      <div className="absolute left-8 top-1/2 -translate-y-1/2 h-16 w-16 rounded-2xl bg-[#b8d4ef]/10 border border-[#b8d4ef]/30 flex items-center justify-center text-[#b8d4ef]">
+                        <card.Icon className="h-7 w-7" />
+                      </div>
+                      <div className="signal-sweep absolute inset-y-0 left-0 w-20" />
+                    </div>
+                    <h3 className="text-4xl md:text-5xl font-display italic tracking-tight mb-6">{card.title}</h3>
+                    <p className="text-text-primary/80 text-lg leading-relaxed mb-8">{card.desc}</p>
+                    <ul className="space-y-4">
+                      {card.points.map((point) => (
+                        <li key={point} className="flex items-start gap-4 text-base leading-relaxed text-text-primary/75">
+                          <span className="mt-2.5 h-2 w-2 flex-shrink-0 rounded-full bg-[#b8d4ef]" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                    <div className="mt-10 pt-6 border-t border-stroke flex items-center justify-between text-xs uppercase tracking-[0.25em] text-muted">
+                      <span>Sparks</span>
+                      <span>{String(expandedCard + 1).padStart(2, "0")}</span>
+                    </div>
+                  </>
+                );
+              })()}
+            </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
 
       {/* NAVBAR */}
@@ -428,7 +495,7 @@ export default function App() {
             </p>
           </div>
           {quickLookCards.map((item, i) => (
-            <div key={i} className="flex-shrink-0 w-[320px] md:w-[420px] h-[65vh] rounded-3xl overflow-hidden relative group bg-surface border border-stroke p-7 md:p-8 flex flex-col justify-between hover:border-text-primary/30 transition-all duration-500">
+            <div key={i} onClick={() => setExpandedCard(i)} className="flex-shrink-0 w-[320px] md:w-[420px] h-[65vh] rounded-3xl overflow-hidden relative group bg-surface border border-stroke p-7 md:p-8 flex flex-col justify-between hover:border-text-primary/30 transition-all duration-500 cursor-pointer">
               <div className="absolute inset-0 opacity-[0.04] pointer-events-none">
                 <div className="absolute -top-20 -right-24 text-[14rem] font-display italic leading-none">{String(i + 1).padStart(2, "0")}</div>
               </div>
@@ -502,7 +569,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Founders Grid */}
+          {/* Founders Grid — all equal */}
           <div className="founders-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {founders.map((f, i) => (
               <div key={i} className="founder-card group bg-surface border border-stroke rounded-3xl overflow-hidden hover:border-text-primary/30 transition-all duration-500">
@@ -549,7 +616,7 @@ export default function App() {
       {/* FOOTER */}
       <section className="relative w-full py-20 md:py-32 bg-bg overflow-hidden flex flex-col items-center justify-center z-20 min-h-screen">
         <div className="absolute inset-0 w-full h-full z-0">
-          <video ref={footerVideoRef} className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2 scale-y-[-1]" autoPlay muted loop playsInline />
+          <video ref={footerVideoRef} className="absolute top-1/2 left-1/2 min-w-full min-h-full object-cover -translate-x-1/2 -translate-y-1/2" autoPlay muted loop playsInline />
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
         </div>
         <div className="relative z-10 w-full flex flex-col items-center justify-center flex-1">
